@@ -1,0 +1,2395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Территория красоты БЭЛЬ — Студия визуала</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cormorant Garamond & Montserrat (кириллица) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        sans: ['"Montserrat"', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        obsidian: '#0E0D0C',
+                        surface: '#181614',
+                        surface2: '#221F1C',
+                        hairline: '#302B25',
+                        gold: '#D8B26E',
+                        'gold-soft': '#EAD098',
+                        ivory: '#F5EFE6',
+                        muted: '#9D9386',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Строгая мобильная адаптивность без горизонтального скролла */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            background-color: #0E0D0C;
+            color: #F5EFE6;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Люксовые ползунки */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            border-radius: 999px;
+            background: #302B25;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #D8B26E;
+            border: 2px solid #0E0D0C;
+            box-shadow: 0 0 10px rgba(216, 178, 110, 0.45);
+            cursor: pointer;
+            transition: transform 0.15s ease, background-color 0.15s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:active {
+            transform: scale(1.16);
+            background: #EAD098;
+        }
+
+        /* Нативные date/time инпуты в тёмной теме */
+        input[type="date"],
+        input[type="time"] {
+            color-scheme: dark;
+            min-height: 44px;
+            max-width: 100%;
+        }
+
+        /* Выбор цвета без системной рамки */
+        input[type="color"] {
+            -webkit-appearance: none;
+            appearance: none;
+            border: none;
+            padding: 0;
+            background: transparent;
+            cursor: pointer;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: 1.5px solid rgba(216, 178, 110, 0.6);
+            border-radius: 12px;
+        }
+
+        /* Плавное перетаскивание фото на канвасе без перехвата скролла */
+        #previewCanvas {
+            touch-action: none;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen w-full pb-24 lg:pb-12 selection:bg-gold/30 selection:text-ivory">
+
+    <!-- ВЕРХНЯЯ ШАПКА + ФОРМАТЫ + 3 ВКЛАДКИ -->
+    <header class="sticky top-0 z-40 w-full bg-obsidian/95 backdrop-blur-md border-b border-hairline">
+        <div class="w-full max-w-6xl mx-auto px-3 sm:px-5 pt-2.5 pb-2.5">
+            <div class="flex items-center justify-between gap-2 mb-2.5 min-w-0">
+                <div class="min-w-0 flex-1">
+                    <h1 class="font-serif text-[15px] sm:text-2xl font-semibold tracking-wide text-gold-soft leading-tight truncate">
+                        ТЕРРИТОРИЯ КРАСОТЫ БЭЛЬ
+                    </h1>
+                    <p class="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] text-muted mt-0.5 truncate">
+                        ЧМЗ • СТУДИЯ ВИЗУАЛА
+                    </p>
+                </div>
+
+                <!-- Переключатель форматов 4:5 / 1:1 / 9:16 -->
+                <div class="flex items-center bg-surface p-0.5 rounded-xl border border-hairline shrink-0">
+                    <button type="button" data-ratio="4:5" class="ratio-btn px-2 sm:px-3 py-1 rounded-lg text-[10px] sm:text-[11px] font-semibold transition">4:5</button>
+                    <button type="button" data-ratio="1:1" class="ratio-btn px-2 sm:px-3 py-1 rounded-lg text-[10px] sm:text-[11px] font-semibold transition">1:1</button>
+                    <button type="button" data-ratio="9:16" class="ratio-btn px-2 sm:px-3 py-1 rounded-lg text-[10px] sm:text-[11px] font-semibold transition">9:16</button>
+                </div>
+
+                <!-- Кнопка скачивания в шапке на планшете и ПК -->
+                <button id="headerDownloadBtn" type="button"
+                    class="hidden md:inline-flex items-center gap-2 bg-gradient-to-r from-gold to-[#BC954A] hover:brightness-110 active:scale-[0.98] text-obsidian text-xs font-bold uppercase tracking-wider px-4 py-2.5 rounded-full transition shadow-lg shadow-gold/15 shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Скачать PNG (1080px)
+                </button>
+            </div>
+
+            <!-- Главный переключатель 3 вкладок -->
+            <nav class="grid grid-cols-3 gap-1 bg-surface p-1 rounded-2xl border border-hairline w-full" aria-label="Режимы">
+                <button type="button" data-mode="split"
+                    class="mode-tab min-w-0 py-2 px-1 rounded-xl text-[11px] sm:text-xs font-semibold transition flex items-center justify-center">
+                    <span class="truncate">До / После</span>
+                </button>
+                <button type="button" data-mode="single"
+                    class="mode-tab min-w-0 py-2 px-1 rounded-xl text-[11px] sm:text-xs font-semibold transition flex items-center justify-center">
+                    <span class="truncate">Одно фото</span>
+                </button>
+                <button type="button" data-mode="slots"
+                    class="mode-tab min-w-0 py-2 px-1 rounded-xl text-[11px] sm:text-xs font-semibold transition flex items-center justify-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-current opacity-80 inline-block shrink-0"></span>
+                    <span class="truncate">Окошки</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ОСНОВНАЯ СЕТКА -->
+    <main class="w-full max-w-6xl mx-auto px-3 sm:px-5 pt-3 sm:pt-5">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-start">
+
+            <!-- STICKY ЖИВОЕ ПРЕВЬЮ (Закреплено сверху на мобильном) -->
+            <section class="lg:col-span-5 sticky top-[96px] sm:top-[112px] z-30 lg:z-10 min-w-0 w-full">
+                <div class="bg-obsidian/95 backdrop-blur-md pb-2 pt-0.5 lg:bg-transparent lg:backdrop-blur-none lg:p-0 w-full">
+                    <div class="w-full max-w-[420px] mx-auto bg-surface p-2 rounded-3xl shadow-[0_14px_38px_rgba(0,0,0,0.65)] border border-hairline">
+                        <!-- Аккуратная верхняя строка внутри превью -->
+                        <div class="flex items-center justify-between gap-2 px-1.5 pb-1.5 min-w-0">
+                            <span class="text-[10px] sm:text-[11px] font-medium text-muted flex items-center gap-1.5 shrink-0">
+                                <span class="w-1.5 h-1.5 rounded-full bg-gold inline-block shadow-[0_0_8px_#D8B26E]"></span>
+                                <span id="previewMetaLabel">1080×1350</span>
+                            </span>
+                            <span id="dragHint" class="text-[10px] sm:text-[11px] text-gold-soft/90 truncate text-right min-w-0">
+                                Двигайте фото пальцем
+                            </span>
+                        </div>
+
+                        <div class="relative w-full flex items-center justify-center overflow-hidden rounded-2xl bg-black/60">
+                            <canvas id="previewCanvas"
+                                class="block max-h-[37vh] sm:max-h-[46vh] lg:max-h-[70vh] w-auto max-w-full h-auto rounded-2xl cursor-grab active:cursor-grabbing"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ПАНЕЛЬ НАСТРОЕК -->
+            <section class="lg:col-span-7 space-y-4 min-w-0 w-full">
+
+                <!-- =========================================================
+                     НОВАЯ КЛЮЧЕВАЯ КАРТОЧКА: МАСШТАБ ТЕКСТА (ДЛЯ ВСЕХ 3 ВКЛАДОК)
+                     ========================================================= -->
+                <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-gold/35 shadow-lg space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="w-2 h-2 rounded-full bg-gold shrink-0"></span>
+                            <label for="textScaleSlider" class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                                Масштаб текста
+                            </label>
+                        </div>
+                        <div class="flex items-center gap-2.5 shrink-0">
+                            <span id="textScaleVal" class="text-xs font-bold text-obsidian bg-gold px-2.5 py-0.5 rounded-full">110%</span>
+                            <button type="button" id="resetTextScaleBtn"
+                                class="text-[11px] text-muted hover:text-gold-soft underline underline-offset-4 transition">
+                                Сброс
+                            </button>
+                        </div>
+                    </div>
+
+                    <input type="range" id="textScaleSlider" min="75" max="165" step="5" value="110" class="w-full">
+
+                    <div class="flex items-center justify-between text-[10px] text-muted">
+                        <span>Мельче (75%)</span>
+                        <span>Оптимально (110%)</span>
+                        <span>Крупно (165%)</span>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     БЛОК 1: 8 ЛЮКСОВЫХ ТЕМ + СВОИ ЦВЕТА (ДЛЯ ВСЕХ 3 ВКЛАДОК)
+                     ========================================================= -->
+                <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                            Оформление и палитра
+                        </label>
+                        <span id="customColorBadge" class="hidden text-[10px] px-2.5 py-0.5 rounded-full bg-gold/15 text-gold border border-gold/30 font-medium">
+                            Своя палитра
+                        </span>
+                    </div>
+
+                    <!-- 8 готовых люксовых тем -->
+                    <div id="themesGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <!-- Генерируется JS -->
+                    </div>
+
+                    <!-- Блок «Свои цвета» -->
+                    <div class="pt-3 border-t border-hairline space-y-3">
+                        <span class="block text-[11px] uppercase tracking-[0.14em] text-muted font-semibold">
+                            Свои цвета (автоконтраст текста)
+                        </span>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div class="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-surface2 border border-hairline min-w-0">
+                                <div class="min-w-0">
+                                    <p class="text-xs font-medium text-ivory truncate">Цвет фона</p>
+                                    <p id="bgHexLabel" class="text-[10px] text-muted uppercase font-mono truncate">#0B0A09</p>
+                                </div>
+                                <input type="color" id="customBgPicker" value="#0B0A09" class="w-10 h-9 rounded-xl shrink-0" title="Выбрать цвет фона">
+                            </div>
+
+                            <div class="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-surface2 border border-hairline min-w-0">
+                                <div class="min-w-0">
+                                    <p class="text-xs font-medium text-ivory truncate">Акцент / золото</p>
+                                    <p id="accentHexLabel" class="text-[10px] text-muted uppercase font-mono truncate">#D9B370</p>
+                                </div>
+                                <input type="color" id="customAccentPicker" value="#D9B370" class="w-10 h-9 rounded-xl shrink-0" title="Выбрать цвет акцента">
+                            </div>
+                        </div>
+
+                        <!-- Чекбокс «Золотое свечение» -->
+                        <label class="p-3 rounded-2xl bg-surface2 border border-hairline flex items-center justify-between gap-3 cursor-pointer select-none">
+                            <div class="min-w-0">
+                                <p class="text-xs sm:text-sm font-medium text-ivory">Золотое свечение</p>
+                                <p class="text-[11px] text-muted leading-tight mt-0.5">Мягкие блики, боке и световые лучи</p>
+                            </div>
+                            <input type="checkbox" id="toggleGlowCheck" checked class="sr-only peer">
+                            <div class="relative w-11 h-6 bg-obsidian border border-hairline rounded-full peer peer-checked:bg-gold transition-colors shrink-0 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ivory peer-checked:after:bg-obsidian after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     ПАНЕЛЬ ДЛЯ ВКЛАДОК 1 И 2 («До / После» и «Одно фото»)
+                     ========================================================= -->
+                <div id="photoModesPanel" class="space-y-4">
+
+                    <!-- Загрузка фото и кадрирование -->
+                    <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-3.5">
+                        <label class="block text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                            Фотографии и кадрирование
+                        </label>
+
+                        <div class="grid grid-cols-2 gap-2.5" id="photoUploadGrid">
+                            <button type="button" id="uploadBeforeBtn"
+                                class="flex items-center justify-center gap-2 py-3.5 px-3 rounded-2xl bg-surface2 border border-hairline hover:border-gold text-ivory text-xs font-semibold active:scale-[0.98] transition min-w-0">
+                                <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                                </svg>
+                                <span id="uploadBeforeLabel" class="truncate">Фото ДО</span>
+                            </button>
+                            <button type="button" id="uploadAfterBtn"
+                                class="flex items-center justify-center gap-2 py-3.5 px-3 rounded-2xl bg-surface2 border border-hairline hover:border-gold text-ivory text-xs font-semibold active:scale-[0.98] transition min-w-0">
+                                <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                                </svg>
+                                <span class="truncate">Фото ПОСЛЕ</span>
+                            </button>
+                        </div>
+
+                        <div class="pt-1 space-y-3">
+                            <div class="grid grid-cols-2 gap-1 bg-obsidian p-1 rounded-2xl border border-hairline" id="photoTabGroup">
+                                <button type="button" data-tab="before" class="photo-tab-btn py-1.5 rounded-xl text-xs font-medium transition">Кадр «ДО»</button>
+                                <button type="button" data-tab="after" class="photo-tab-btn py-1.5 rounded-xl text-xs font-medium transition">Кадр «ПОСЛЕ»</button>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between gap-2 text-xs mb-1.5">
+                                    <span class="text-muted truncate">Зум фото (двигайте пальцем)</span>
+                                    <span id="zoomVal" class="font-semibold text-gold-soft shrink-0">100%</span>
+                                </div>
+                                <input type="range" id="zoomSlider" min="1" max="2.5" step="0.02" value="1" class="w-full">
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="button" id="resetPhotoPosBtn"
+                                    class="text-[11px] text-gold hover:text-gold-soft underline underline-offset-4 transition">
+                                    Сбросить масштаб и позицию
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Плашка с названием процедуры -->
+                    <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-3.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                                Название процедуры
+                            </label>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <span class="text-[11px] text-muted">Плашка:</span>
+                                <div class="inline-flex bg-obsidian p-0.5 rounded-xl border border-hairline">
+                                    <button type="button" data-size="mini" class="size-btn px-2.5 py-1 rounded-lg text-[11px] font-medium transition">Мини</button>
+                                    <button type="button" data-size="medium" class="size-btn px-2.5 py-1 rounded-lg text-[11px] font-medium transition">Средний</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1.5" id="procChipsContainer">
+                            <button type="button" data-text="Ламинирование ресниц" class="proc-chip px-3 py-1.5 rounded-full text-xs font-medium border transition">Ламинирование ресниц</button>
+                            <button type="button" data-text="Ламинирование бровей" class="proc-chip px-3 py-1.5 rounded-full text-xs font-medium border transition">Ламинирование бровей</button>
+                            <button type="button" data-text="Комплекс" class="proc-chip px-3 py-1.5 rounded-full text-xs font-medium border transition">Комплекс</button>
+                            <button type="button" data-text="Перманентный макияж" class="proc-chip px-3 py-1.5 rounded-full text-xs font-medium border transition">Перманентный макияж</button>
+                            <button type="button" data-text="Наращивание ресниц" class="proc-chip px-3 py-1.5 rounded-full text-xs font-medium border transition">Наращивание ресниц</button>
+                            <button type="button" data-text="Коррекция + окрашивание" class="proc-chip px-3 py-1.5 rounded-full text-xs font-medium border transition">Коррекция + окрашивание</button>
+                            <button type="button" data-text="Работа ученицы" class="proc-chip px-3 py-1.5 rounded-full text-xs font-medium border transition">Работа ученицы</button>
+                            <button type="button" data-text="" class="proc-chip px-3 py-1.5 rounded-full text-xs font-medium border transition">Без плашки</button>
+                        </div>
+
+                        <input type="text" id="procedureInput" value="Ламинирование ресниц"
+                            placeholder="Свой текст (пусто = без плашки)"
+                            class="w-full px-3.5 py-2.5 rounded-2xl bg-surface2 border border-hairline focus:border-gold focus:outline-none text-sm text-ivory placeholder:text-muted/60 transition">
+                    </div>
+
+                    <!-- Цветокоррекция и микро-метки -->
+                    <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-4">
+                        <div class="flex items-center justify-between gap-2">
+                            <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                                Цветокоррекция фото
+                            </label>
+                            <button type="button" id="resetColorBtn"
+                                class="text-[11px] text-gold hover:text-gold-soft underline underline-offset-4 transition shrink-0">
+                                Сбросить
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1.5">
+                                    <span class="text-muted">Яркость</span>
+                                    <span id="brightnessVal" class="font-medium text-ivory">0</span>
+                                </div>
+                                <input type="range" id="brightnessSlider" min="-20" max="25" step="1" value="0" class="w-full">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1.5">
+                                    <span class="text-muted">Теплота</span>
+                                    <span id="warmthVal" class="font-medium text-ivory">0</span>
+                                </div>
+                                <input type="range" id="warmthSlider" min="0" max="25" step="1" value="0" class="w-full">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1.5">
+                                    <span class="text-muted">Контраст</span>
+                                    <span id="contrastVal" class="font-medium text-ivory">0</span>
+                                </div>
+                                <input type="range" id="contrastSlider" min="-15" max="25" step="1" value="0" class="w-full">
+                            </div>
+                        </div>
+
+                        <hr class="border-hairline">
+
+                        <label id="labelsToggleRow" class="flex items-center justify-between gap-3 cursor-pointer select-none">
+                            <div class="min-w-0">
+                                <p class="text-xs sm:text-sm font-medium text-ivory">Микро-метки «ДО» и «ПОСЛЕ»</p>
+                                <p class="text-[11px] text-muted">Деликатные пометки в верхнем углу</p>
+                            </div>
+                            <input type="checkbox" id="toggleLabelsCheck" checked class="sr-only peer">
+                            <div class="relative w-11 h-6 bg-obsidian border border-hairline rounded-full peer peer-checked:bg-gold transition-colors shrink-0 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ivory peer-checked:after:bg-obsidian after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     ПАНЕЛЬ ДЛЯ ВКЛАДКИ 3 («Свободные окошки»)
+                     ========================================================= -->
+                <div id="slotsModePanel" class="hidden space-y-4">
+
+                    <!-- Фото без резких границ -->
+                    <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <label class="text-[11px] uppercase tracking-[0.14em] text-gold font-semibold leading-snug">
+                                Фото без резких границ
+                            </label>
+                            <button type="button" id="uploadSlotPhotoBtn"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface2 border border-gold/40 text-xs font-semibold text-gold-soft hover:border-gold active:scale-95 transition shrink-0">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                                </svg>
+                                Загрузить фото
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-1 bg-obsidian p-1 rounded-2xl border border-hairline">
+                            <button type="button" data-placement="corner" class="placement-btn py-2 px-1.5 rounded-xl text-xs font-medium transition">В углу</button>
+                            <button type="button" data-placement="side" class="placement-btn py-2 px-1.5 rounded-xl text-xs font-medium transition">Сбоку</button>
+                            <button type="button" data-placement="none" class="placement-btn py-2 px-1.5 rounded-xl text-xs font-medium transition">Без фото</button>
+                        </div>
+
+                        <div id="slotPhotoControls" class="space-y-3.5 pt-0.5">
+                            <div>
+                                <div class="flex justify-between gap-2 text-xs mb-1.5">
+                                    <span class="text-ivory font-medium truncate">Размер фото на баннере</span>
+                                    <span id="slotAreaSizeVal" class="font-semibold text-gold-soft shrink-0">68%</span>
+                                </div>
+                                <input type="range" id="slotAreaSizeSlider" min="35" max="100" step="1" value="68" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between gap-2 text-xs mb-1.5">
+                                    <span class="text-muted truncate">Зум фото (двигайте пальцем)</span>
+                                    <span id="slotZoomVal" class="font-semibold text-gold-soft shrink-0">100%</span>
+                                </div>
+                                <input type="range" id="slotZoomSlider" min="0.6" max="2.2" step="0.02" value="1" class="w-full">
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between gap-2 text-xs mb-1.5">
+                                    <span class="text-muted truncate">Мягкость краёв</span>
+                                    <span id="slotFeatherVal" class="font-semibold text-gold-soft shrink-0">82%</span>
+                                </div>
+                                <input type="range" id="slotFeatherSlider" min="20" max="100" step="1" value="82" class="w-full">
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="button" id="resetSlotPhotoBtn"
+                                    class="text-[11px] text-gold hover:text-gold-soft underline underline-offset-4 transition">
+                                    Сбросить позицию и зум
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Конструктор дат и времени -->
+                    <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                                Конструктор окошек
+                            </label>
+                            <span class="text-[11px] text-muted">Выбор в 2 клика</span>
+                        </div>
+
+                        <div>
+                            <label for="slotDateInput" class="block text-xs text-muted mb-1.5">1. Выберите дату</label>
+                            <input type="date" id="slotDateInput"
+                                class="w-full px-3.5 py-2.5 rounded-2xl bg-surface2 border border-hairline focus:border-gold focus:outline-none text-sm font-medium text-ivory transition">
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-2">
+                                <span class="text-xs text-muted">2. Отметьте свободное время</span>
+                                <button type="button" id="clearSelectedTimesBtn"
+                                    class="text-[11px] text-gold hover:text-gold-soft underline underline-offset-4 transition shrink-0">
+                                    Снять выбор
+                                </button>
+                            </div>
+                            <div id="timeChipsContainer" class="flex flex-wrap gap-1.5">
+                                <!-- Генерируется JS -->
+                            </div>
+                        </div>
+
+                        <!-- Ввод своего времени -->
+                        <div class="flex items-center gap-2 min-w-0">
+                            <div class="flex-1 min-w-0">
+                                <input type="time" id="customTimeInput" value="13:30"
+                                    class="w-full px-3.5 py-2 rounded-2xl bg-surface2 border border-hairline focus:border-gold focus:outline-none text-sm font-medium text-ivory transition">
+                            </div>
+                            <button type="button" id="addCustomTimeBtn"
+                                class="h-[44px] px-3.5 rounded-2xl bg-surface2 border border-hairline hover:border-gold text-ivory text-xs font-semibold active:scale-[0.97] transition shrink-0 flex items-center gap-1">
+                                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                                </svg>
+                                <span>Добавить</span>
+                            </button>
+                        </div>
+
+                        <!-- Кнопка добавления строчки -->
+                        <button type="button" id="addSlotRowBtn"
+                            class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-gold to-[#BC954A] hover:brightness-110 active:scale-[0.98] text-obsidian text-xs sm:text-sm font-bold tracking-wide shadow-lg shadow-gold/15 transition flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                            </svg>
+                            <span>+ Добавить строчку</span>
+                        </button>
+                    </div>
+
+                    <!-- Список добавленных строчек -->
+                    <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <label class="text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                                Строчки на баннере (<span id="slotsCountLabel">0</span>)
+                            </label>
+                            <button type="button" id="clearAllSlotsBtn"
+                                class="text-[11px] text-rose-400 hover:text-rose-300 font-medium underline underline-offset-4 transition shrink-0">
+                                Очистить всё
+                            </button>
+                        </div>
+
+                        <div id="addedSlotsList" class="space-y-2">
+                            <!-- Рендерится JS -->
+                        </div>
+                    </div>
+
+                    <!-- Заголовок, месяц и заметка -->
+                    <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-3">
+                        <label class="block text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                            Заголовок и заметка
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="min-w-0">
+                                <label for="slotMonthInput" class="block text-xs text-muted mb-1">Месяц</label>
+                                <input type="text" id="slotMonthInput" value="НОЯБРЬ"
+                                    placeholder="Авто по датам"
+                                    class="w-full px-3.5 py-2.5 rounded-2xl bg-surface2 border border-hairline focus:border-gold focus:outline-none text-sm text-ivory placeholder:text-muted/60 transition">
+                            </div>
+                            <div class="min-w-0">
+                                <label for="slotHeaderInput" class="block text-xs text-muted mb-1">Заголовок</label>
+                                <input type="text" id="slotHeaderInput" value="СВОБОДНЫЕ ОКОШКИ"
+                                    class="w-full px-3.5 py-2.5 rounded-2xl bg-surface2 border border-hairline focus:border-gold focus:outline-none text-sm text-ivory transition">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="slotNoteInput" class="block text-xs text-muted mb-1">Заметка внизу расписания</label>
+                            <input type="text" id="slotNoteInput" value="Запись в личные сообщения • Вечер по договорённости"
+                                class="w-full px-3.5 py-2.5 rounded-2xl bg-surface2 border border-hairline focus:border-gold focus:outline-none text-sm text-ivory transition">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- =========================================================
+                     БЛОК КОНТАКТОВ ВНИЗУ КАРТОЧКИ (ДЛЯ ВСЕХ 3 ВКЛАДОК)
+                     ========================================================= -->
+                <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-3.5">
+                    <label class="flex items-center justify-between gap-3 cursor-pointer select-none">
+                        <div class="min-w-0">
+                            <span class="block text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                                Блок контактов внизу
+                            </span>
+                            <p class="text-[11px] text-muted mt-0.5">Телефон и VK с векторными иконками</p>
+                        </div>
+                        <input type="checkbox" id="toggleContactsCheck" checked class="sr-only peer">
+                        <div class="relative w-11 h-6 bg-obsidian border border-hairline rounded-full peer peer-checked:bg-gold transition-colors shrink-0 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-ivory peer-checked:after:bg-obsidian after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+                    </label>
+
+                    <div id="contactsInputsWrap" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                        <div class="min-w-0">
+                            <label for="contactPhoneInput" class="block text-[11px] text-muted mb-1">Телефон</label>
+                            <input type="text" id="contactPhoneInput" value="8-912-479-93-17"
+                                class="w-full px-3.5 py-2 rounded-2xl bg-surface2 border border-hairline focus:border-gold focus:outline-none text-xs sm:text-sm text-ivory transition">
+                        </div>
+                        <div class="min-w-0">
+                            <label for="contactVkInput" class="block text-[11px] text-muted mb-1">VK</label>
+                            <input type="text" id="contactVkInput" value="elzida_berdykaeva74"
+                                class="w-full px-3.5 py-2 rounded-2xl bg-surface2 border border-hairline focus:border-gold focus:outline-none text-xs sm:text-sm text-ivory transition">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопка скачивания для ПК -->
+                <div class="hidden lg:block pt-1">
+                    <button type="button" id="desktopDownloadBtn"
+                        class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-gold to-[#BC954A] hover:brightness-110 active:scale-[0.99] text-obsidian font-bold text-sm uppercase tracking-widest shadow-xl shadow-gold/15 transition flex items-center justify-center gap-2.5">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        СКАЧАТЬ PNG (1080PX)
+                    </button>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- Скрытые инпуты для загрузки фото -->
+    <input type="file" id="fileBefore" accept="image/*" class="hidden">
+    <input type="file" id="fileAfter" accept="image/*" class="hidden">
+    <input type="file" id="fileSlotPhoto" accept="image/*" class="hidden">
+
+    <!-- Закреплённая кнопка скачивания на мобильном -->
+    <div class="lg:hidden fixed bottom-0 inset-x-0 z-40 px-3 py-2.5 bg-gradient-to-t from-obsidian via-obsidian/95 to-transparent">
+        <button type="button" id="mobileDownloadBtn"
+            class="w-full max-w-md mx-auto py-3.5 px-5 rounded-2xl bg-gradient-to-r from-gold to-[#BC954A] active:scale-[0.98] text-obsidian font-bold text-xs sm:text-sm uppercase tracking-wider shadow-xl shadow-black/60 transition flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>СКАЧАТЬ PNG (1080PX)</span>
+        </button>
+    </div>
+
+    <!-- Всплывающее уведомление (Toast) -->
+    <div id="toast"
+        class="fixed top-28 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 -translate-y-3 transition-all duration-300 max-w-[90vw]">
+        <div class="flex items-center gap-2 bg-surface2 text-ivory px-4 py-2.5 rounded-full shadow-2xl border border-gold/50">
+            <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span id="toastText" class="text-xs font-medium tracking-wide truncate">Готово!</span>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // КОНСТАНТЫ, ФОРМАТЫ И 8 ЛЮКСОВЫХ ТЕМ
+        // =========================================================================
+        const RATIO_SIZES = {
+            '4:5':  { w: 1080, h: 1350 },
+            '1:1':  { w: 1080, h: 1080 },
+            '9:16': { w: 1080, h: 1920 }
+        };
+
+        const QUICK_TIMES = [
+            '09:00', '10:00', '11:00', '11:30', '12:30',
+            '13:00', '14:00', '15:30', '17:00', '18:30', '19:00'
+        ];
+
+        const MONTHS_NOMINATIVE = [
+            'ЯНВАРЬ', 'ФЕВРАЛЬ', 'МАРТ', 'АПРЕЛЬ', 'МАЙ', 'ИЮНЬ',
+            'ИЮЛЬ', 'АВГУСТ', 'СЕНТЯБРЬ', 'ОКТЯБРЬ', 'НОЯБРЬ', 'ДЕКАБРЬ'
+        ];
+
+        const MONTHS_GENITIVE = [
+            'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+            'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+        ];
+
+        const WEEKDAYS_CAP = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+
+        // Плавная нелинейная кривая затухания прозрачности (8 остановок)
+        const SMOOTH_FEATHER_STOPS = [
+            [0.00, 1.00],
+            [0.16, 0.96],
+            [0.34, 0.82],
+            [0.52, 0.58],
+            [0.68, 0.30],
+            [0.82, 0.10],
+            [0.92, 0.02],
+            [1.00, 0.00]
+        ];
+
+        // 8 готовых люксовых тем (по умолчанию «Чёрное золото»)
+        const PRESET_THEMES = [
+            { id: 'black-gold',  name: 'Чёрное золото', bg: '#0B0A09', accent: '#D9B370', text: '#F7F1E5', glow: true,  titleFont: 'serif' },
+            { id: 'espresso',    name: 'Эспрессо',      bg: '#1A120E', accent: '#DFC191', text: '#F5EAE0', glow: true,  titleFont: 'serif' },
+            { id: 'emerald',     name: 'Изумруд',       bg: '#0B1C16', accent: '#D9B878', text: '#F2EFE9', glow: true,  titleFont: 'serif' },
+            { id: 'bordo',       name: 'Бордо',         bg: '#1D0B10', accent: '#E2B5A5', text: '#F8EFEA', glow: true,  titleFont: 'serif' },
+            { id: 'graphite',    name: 'Графит',        bg: '#17191C', accent: '#D7DCE2', text: '#F4F6F9', glow: false, titleFont: 'serif' },
+            { id: 'champagne',   name: 'Шампань',       bg: '#EFE7DC', accent: '#A88254', text: '#2B211A', glow: false, titleFont: 'serif' },
+            { id: 'powder-nude', name: 'Пудровый нюд',  bg: '#F2E5E2', accent: '#B97A73', text: '#382623', glow: false, titleFont: 'serif' },
+            { id: 'minimalism',  name: 'Минимализм',    bg: '#F7F6F3', accent: '#9E8458', text: '#1A1A1A', glow: false, titleFont: 'sans'  }
+        ];
+
+        // =========================================================================
+        // СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+        // =========================================================================
+        const state = {
+            mode: 'split',               // 'split' | 'single' | 'slots'
+            ratio: '4:5',                // '4:5' | '1:1' | '9:16'
+            textScale: 110,              // 75..165 (%) — глобальный масштаб текста
+
+            // Палитра (по умолчанию «Чёрное золото»)
+            themeId: 'black-gold',
+            bgColor: '#0B0A09',
+            accentColor: '#D9B370',
+            presetTextColor: '#F7F1E5',
+            titleFont: 'serif',
+            goldenGlow: true,
+
+            // Режимы «До / После» и «Одно фото»
+            plateSize: 'mini',           // 'mini' | 'medium'
+            procedure: 'Ламинирование ресниц',
+            showLabels: true,
+            brightness: 0,
+            warmth: 0,
+            contrast: 0,
+            activePhotoTab: 'before',
+            photos: {
+                before: { img: null, zoom: 1, offsetX: 0, offsetY: 0 },
+                after:  { img: null, zoom: 1, offsetX: 0, offsetY: 0 }
+            },
+
+            // Режим «Свободные окошки»
+            slots: {
+                rows: [],
+                selectedTimes: new Set(['10:00', '14:00', '17:00']),
+                header: 'СВОБОДНЫЕ ОКОШКИ',
+                customMonth: 'НОЯБРЬ',
+                note: 'Запись в личные сообщения • Вечер по договорённости',
+                placement: 'corner',     // 'corner' | 'side' | 'none'
+                areaSize: 68,            // 35..100 (%) — размер видимой области фото
+                feather: 82,             // 20..100 (%) — мягкость краёв
+                photo: { img: null, zoom: 1, offsetX: 0, offsetY: 0 }
+            },
+
+            // Нижний блок контактов
+            showContacts: true,
+            contactPhone: '8-912-479-93-17',
+            contactVk: 'elzida_berdykaeva74'
+        };
+
+        // DOM-элементы и скрытый offscreen-холст
+        const canvas = document.getElementById('previewCanvas');
+        const ctx = canvas.getContext('2d');
+        const offCanvas = document.createElement('canvas');
+        const offCtx = offCanvas.getContext('2d');
+
+        const fileBefore = document.getElementById('fileBefore');
+        const fileAfter = document.getElementById('fileAfter');
+        const fileSlotPhoto = document.getElementById('fileSlotPhoto');
+
+        const textScaleSlider = document.getElementById('textScaleSlider');
+        const customBgPicker = document.getElementById('customBgPicker');
+        const customAccentPicker = document.getElementById('customAccentPicker');
+        const toggleGlowCheck = document.getElementById('toggleGlowCheck');
+
+        const procedureInput = document.getElementById('procedureInput');
+        const zoomSlider = document.getElementById('zoomSlider');
+        const brightnessSlider = document.getElementById('brightnessSlider');
+        const warmthSlider = document.getElementById('warmthSlider');
+        const contrastSlider = document.getElementById('contrastSlider');
+        const toggleLabelsCheck = document.getElementById('toggleLabelsCheck');
+
+        const slotDateInput = document.getElementById('slotDateInput');
+        const customTimeInput = document.getElementById('customTimeInput');
+        const slotHeaderInput = document.getElementById('slotHeaderInput');
+        const slotMonthInput = document.getElementById('slotMonthInput');
+        const slotNoteInput = document.getElementById('slotNoteInput');
+
+        const slotAreaSizeSlider = document.getElementById('slotAreaSizeSlider');
+        const slotZoomSlider = document.getElementById('slotZoomSlider');
+        const slotFeatherSlider = document.getElementById('slotFeatherSlider');
+
+        const toggleContactsCheck = document.getElementById('toggleContactsCheck');
+        const contactPhoneInput = document.getElementById('contactPhoneInput');
+        const contactVkInput = document.getElementById('contactVkInput');
+
+        // =========================================================================
+        // УТИЛИТЫ ЦВЕТА И АВТОПОДБОРА КОНТРАСТА
+        // =========================================================================
+        function hexToRgb(hex) {
+            const clean = hex.replace('#', '');
+            const full = clean.length === 3
+                ? clean.split('').map(c => c + c).join('')
+                : clean.padEnd(6, '0');
+            const num = parseInt(full, 16);
+            return {
+                r: (num >> 16) & 255,
+                g: (num >> 8) & 255,
+                b: num & 255
+            };
+        }
+
+        function rgba(hex, alpha) {
+            const { r, g, b } = hexToRgb(hex);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function shiftHex(hex, amount) {
+            const { r, g, b } = hexToRgb(hex);
+            const clamp = v => Math.max(0, Math.min(255, Math.round(v + amount)));
+            const toHex = v => clamp(v).toString(16).padStart(2, '0');
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+
+        function getLuminance(hex) {
+            const { r, g, b } = hexToRgb(hex);
+            const lin = (c) => {
+                const s = c / 255;
+                return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+            };
+            return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+        }
+
+        function getResolvedPalette() {
+            const bg = state.bgColor;
+            const accent = state.accentColor;
+            const isDarkBg = getLuminance(bg) < 0.36;
+
+            const textColor = (state.themeId !== 'custom' && state.presetTextColor)
+                ? state.presetTextColor
+                : (isDarkBg ? '#F7F1E5' : '#1E1815');
+
+            const isLightText = getLuminance(textColor) > 0.45;
+            const bgEnd = isDarkBg ? shiftHex(bg, 15) : shiftHex(bg, -13);
+
+            return {
+                bg,
+                bgEnd,
+                accent,
+                text: textColor,
+                subText: rgba(textColor, isLightText ? 0.78 : 0.72),
+                isDarkBg,
+                isLightText,
+                plateBg: rgba(bg, isDarkBg ? 0.88 : 0.92),
+                plateBorder: rgba(accent, 0.78),
+                pillBg: rgba(bg, isDarkBg ? 0.78 : 0.84),
+                pillBorder: rgba(accent, 0.60),
+                badgeBg: isDarkBg ? rgba(accent, 0.16) : rgba('#FFFFFF', 0.76),
+                badgeBorder: rgba(accent, isDarkBg ? 0.52 : 0.56),
+                divider: rgba(accent, isDarkBg ? 0.30 : 0.34),
+                shadow: isDarkBg ? 'rgba(0, 0, 0, 0.58)' : 'rgba(30, 22, 18, 0.16)',
+                titleFont: state.titleFont
+            };
+        }
+
+        // =========================================================================
+        // УТИЛИТЫ ДАТ, ТЕКСТА И ГРАФИКИ
+        // =========================================================================
+        function toISODate(dateObj) {
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function parseISODate(isoStr) {
+            const [y, m, d] = isoStr.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        function addDaysISO(isoStr, days) {
+            const dt = parseISODate(isoStr);
+            dt.setDate(dt.getDate() + days);
+            return toISODate(dt);
+        }
+
+        function formatDateRussian(isoStr) {
+            const dt = parseISODate(isoStr);
+            return `${dt.getDate()} ${MONTHS_GENITIVE[dt.getMonth()]} (${WEEKDAYS_CAP[dt.getDay()]})`;
+        }
+
+        function getMonthHeader() {
+            const custom = state.slots.customMonth.trim();
+            if (custom) return custom.toUpperCase();
+            if (state.slots.rows.length > 0) {
+                return MONTHS_NOMINATIVE[parseISODate(state.slots.rows[0].date).getMonth()];
+            }
+            return MONTHS_NOMINATIVE[new Date().getMonth()];
+        }
+
+        function drawRoundedRect(c, x, y, w, h, r) {
+            const radius = Math.min(r, w / 2, h / 2);
+            c.beginPath();
+            c.moveTo(x + radius, y);
+            c.arcTo(x + w, y, x + w, y + h, radius);
+            c.arcTo(x + w, y + h, x, y + h, radius);
+            c.arcTo(x, y + h, x, y, radius);
+            c.arcTo(x, y, x + w, y, radius);
+            c.closePath();
+        }
+
+        function drawTrackedText(c, text, x, y, letterSpacing, align = 'left') {
+            if (!letterSpacing) {
+                c.textAlign = align;
+                c.fillText(text, x, y);
+                return;
+            }
+            const chars = Array.from(text);
+            let totalW = 0;
+            chars.forEach((ch, idx) => {
+                totalW += c.measureText(ch).width + (idx < chars.length - 1 ? letterSpacing : 0);
+            });
+            let curX = x;
+            if (align === 'center') curX = x - totalW / 2;
+            else if (align === 'right') curX = x - totalW;
+
+            c.textAlign = 'left';
+            chars.forEach((ch) => {
+                c.fillText(ch, curX, y);
+                curX += c.measureText(ch).width + letterSpacing;
+            });
+        }
+
+        function wrapTextLines(c, text, maxWidth) {
+            const words = text.split(/\s+/);
+            const lines = [];
+            let current = '';
+            for (const word of words) {
+                const test = current ? `${current} ${word}` : word;
+                if (c.measureText(test).width > maxWidth && current) {
+                    lines.push(current);
+                    current = word;
+                } else {
+                    current = test;
+                }
+            }
+            if (current) lines.push(current);
+            return lines;
+        }
+
+        function getCanvasFilterString() {
+            const b = 1 + state.brightness / 100;
+            const c = 1 + state.contrast / 100;
+            const w = state.warmth / 100;
+            const sat = 1 + (state.warmth > 0 ? 0.05 : 0) + (state.contrast > 5 ? 0.04 : 0);
+            if (state.brightness === 0 && state.contrast === 0 && state.warmth === 0) return 'none';
+            return `brightness(${b.toFixed(2)}) contrast(${c.toFixed(2)}) sepia(${w.toFixed(2)}) saturate(${sat.toFixed(2)})`;
+        }
+
+        // =========================================================================
+        // ЗОЛОТОЕ СВЕЧЕНИЕ И ВЕКТОРНЫЕ ИКОНКИ КОНТАКТОВ
+        // =========================================================================
+        function drawGoldenGlowOverlay(c, w, h, pal, intensity = 1) {
+            if (!state.goldenGlow) return;
+            c.save();
+
+            const glowColor = pal.accent;
+            // Верхний правый тёплый блик
+            const g1 = c.createRadialGradient(w * 0.88, h * 0.12, 10, w * 0.88, h * 0.12, w * 0.58);
+            g1.addColorStop(0, rgba(glowColor, (pal.isDarkBg ? 0.26 : 0.16) * intensity));
+            g1.addColorStop(0.5, rgba(glowColor, (pal.isDarkBg ? 0.08 : 0.05) * intensity));
+            g1.addColorStop(1, 'rgba(0,0,0,0)');
+            c.fillStyle = g1;
+            c.fillRect(0, 0, w, h);
+
+            // Нижний левый мягкий свет
+            const g2 = c.createRadialGradient(w * 0.12, h * 0.88, 10, w * 0.12, h * 0.88, w * 0.48);
+            g2.addColorStop(0, rgba(glowColor, (pal.isDarkBg ? 0.17 : 0.10) * intensity));
+            g2.addColorStop(1, 'rgba(0,0,0,0)');
+            c.fillStyle = g2;
+            c.fillRect(0, 0, w, h);
+
+            // Деликатные боке-частицы
+            const sparkles = [
+                [0.83, 0.13, 3.2, 0.72], [0.76, 0.21, 2.1, 0.52], [0.91, 0.25, 2.5, 0.62],
+                [0.68, 0.10, 1.8, 0.42], [0.87, 0.34, 1.7, 0.42], [0.15, 0.84, 2.4, 0.48],
+                [0.24, 0.78, 1.8, 0.38], [0.74, 0.71, 2.5, 0.48], [0.58, 0.18, 1.6, 0.36],
+                [0.92, 0.52, 2.2, 0.44], [0.11, 0.27, 1.9, 0.34]
+            ];
+            sparkles.forEach(([px, py, r, a]) => {
+                const sx = w * px;
+                const sy = h * py;
+                const sg = c.createRadialGradient(sx, sy, 0, sx, sy, r * 4.5);
+                sg.addColorStop(0, rgba('#FFF8E4', a * intensity));
+                sg.addColorStop(0.35, rgba(glowColor, a * 0.55 * intensity));
+                sg.addColorStop(1, 'rgba(0,0,0,0)');
+                c.fillStyle = sg;
+                c.beginPath();
+                c.arc(sx, sy, r * 4.5, 0, Math.PI * 2);
+                c.fill();
+            });
+
+            // Тонкая световая диагональная нить в углу
+            c.strokeStyle = rgba(glowColor, (pal.isDarkBg ? 0.25 : 0.16) * intensity);
+            c.lineWidth = 1.4;
+            c.beginPath();
+            c.moveTo(w * 0.72, 0);
+            c.lineTo(w, h * 0.19);
+            c.stroke();
+
+            c.restore();
+        }
+
+        // Векторная иконка телефона в круглой рамке
+        function drawPhoneIcon(c, cx, cy, r, pal) {
+            c.save();
+            c.beginPath();
+            c.arc(cx, cy, r, 0, Math.PI * 2);
+            c.strokeStyle = pal.accent;
+            c.lineWidth = Math.max(1.4, r * 0.11);
+            c.stroke();
+
+            c.translate(cx, cy);
+            c.scale(r / 15, r / 15);
+            c.strokeStyle = pal.accent;
+            c.lineWidth = 1.8;
+            c.lineCap = 'round';
+            c.lineJoin = 'round';
+            c.beginPath();
+            c.moveTo(-4.5, -5.5);
+            c.lineTo(-2.2, -5.5);
+            c.lineTo(-1.1, -2.3);
+            c.lineTo(-2.8, -1.0);
+            c.quadraticCurveTo(-1.5, 1.5, 1.0, 2.8);
+            c.lineTo(2.3, 1.1);
+            c.lineTo(5.5, 2.2);
+            c.lineTo(5.5, 4.5);
+            c.quadraticCurveTo(5.5, 6.0, 3.8, 5.8);
+            c.quadraticCurveTo(-5.8, 4.6, -5.8, -3.8);
+            c.quadraticCurveTo(-6.0, -5.5, -4.5, -5.5);
+            c.stroke();
+            c.restore();
+        }
+
+        // Векторная иконка VK (скруглённый квадрат + буквы VK)
+        function drawVkIcon(c, cx, cy, size, pal) {
+            c.save();
+            const half = size / 2;
+            drawRoundedRect(c, cx - half, cy - half, size, size, size * 0.25);
+            c.fillStyle = pal.accent;
+            c.fill();
+
+            c.fillStyle = pal.bg;
+            c.font = `700 ${Math.round(size * 0.48)}px "Montserrat", sans-serif`;
+            c.textAlign = 'center';
+            c.textBaseline = 'middle';
+            c.fillText('VK', cx, cy + 0.8);
+            c.restore();
+        }
+
+        // Нижний блок контактов (динамически масштабируется вместе с «Масштабом текста»)
+        function drawContactsBar(c, w, h, pal, overPhoto = false) {
+            const phone = state.contactPhone.trim();
+            const vk = state.contactVk.trim().replace(/^@+/, '');
+            if (!state.showContacts || (!phone && !vk)) return 0;
+
+            const tScale = state.textScale / 100;
+            const barScale = Math.min(1.32, Math.max(0.84, tScale));
+            const isStories = state.ratio === '9:16';
+
+            const barMarginX = 44;
+            const barW = w - barMarginX * 2;
+            const barH = Math.round(66 * barScale);
+            const bottomOffset = isStories ? 64 : 32;
+            const barY = h - bottomOffset - barH;
+            const centerY = barY + barH / 2;
+
+            c.save();
+
+            // Мягкое затемнение под панелью контактов, если она лежит поверх фото
+            if (overPhoto) {
+                const fadeH = barH + bottomOffset + 90;
+                const grad = c.createLinearGradient(0, h - fadeH, 0, h);
+                grad.addColorStop(0, rgba(pal.bg, 0));
+                grad.addColorStop(0.55, rgba(pal.bg, 0.58));
+                grad.addColorStop(1, rgba(pal.bg, 0.90));
+                c.fillStyle = grad;
+                c.fillRect(0, h - fadeH, w, fadeH);
+            }
+
+            // Капсула с тонкой акцентной рамкой
+            drawRoundedRect(c, barMarginX, barY, barW, barH, Math.round(18 * barScale));
+            c.fillStyle = rgba(pal.bg, overPhoto ? 0.80 : (pal.isDarkBg ? 0.68 : 0.78));
+            c.fill();
+            c.lineWidth = 1.4;
+            c.strokeStyle = rgba(pal.accent, 0.58);
+            c.stroke();
+
+            // Подбор шрифта, чтобы никогда не вылезало за рамку даже на 165%
+            let fontSize = Math.round(23 * barScale);
+            let iconSize = Math.round(28 * barScale);
+            let iconGap = Math.round(12 * barScale);
+            let divGap = Math.round(28 * barScale);
+            const hasBoth = Boolean(phone && vk);
+
+            const calcTotalW = (fs, isz, ig, dg) => {
+                c.font = `500 ${fs}px "Montserrat", sans-serif`;
+                const pW = phone ? (isz + ig + c.measureText(phone).width) : 0;
+                const vW = vk ? (isz + ig + c.measureText(vk).width) : 0;
+                return pW + vW + (hasBoth ? dg * 2 : 0);
+            };
+
+            let totalW = calcTotalW(fontSize, iconSize, iconGap, divGap);
+            const maxAllowedW = barW - 48;
+            if (totalW > maxAllowedW) {
+                const shrink = maxAllowedW / totalW;
+                fontSize = Math.max(15, Math.floor(fontSize * shrink));
+                iconSize = Math.max(20, Math.floor(iconSize * shrink));
+                iconGap = Math.max(8, Math.floor(iconGap * shrink));
+                divGap = Math.max(14, Math.floor(divGap * shrink));
+                totalW = calcTotalW(fontSize, iconSize, iconGap, divGap);
+            }
+
+            c.font = `500 ${fontSize}px "Montserrat", sans-serif`;
+            c.textBaseline = 'middle';
+
+            let curX = (w - totalW) / 2;
+
+            if (phone) {
+                drawPhoneIcon(c, curX + iconSize / 2, centerY, iconSize / 2, pal);
+                curX += iconSize + iconGap;
+                c.fillStyle = pal.text;
+                c.textAlign = 'left';
+                c.fillText(phone, curX, centerY + 1);
+                curX += c.measureText(phone).width;
+            }
+
+            if (hasBoth) {
+                curX += divGap;
+                c.strokeStyle = rgba(pal.accent, 0.45);
+                c.lineWidth = 1.2;
+                c.beginPath();
+                c.moveTo(curX, barY + Math.round(barH * 0.24));
+                c.lineTo(curX, barY + barH - Math.round(barH * 0.24));
+                c.stroke();
+                curX += divGap;
+            }
+
+            if (vk) {
+                drawVkIcon(c, curX + iconSize / 2, centerY, iconSize - 2, pal);
+                curX += iconSize + iconGap;
+                c.fillStyle = pal.text;
+                c.textAlign = 'left';
+                c.fillText(vk, curX, centerY + 1);
+            }
+
+            c.restore();
+            return barH + bottomOffset;
+        }
+
+        // =========================================================================
+        // РЕНДЕР ВКЛАДОК 1 И 2 («До / После» и «Одно фото»)
+        // =========================================================================
+        function drawLuxuryPlaceholder(c, x, y, w, h, labelText, pal, isBottom) {
+            const grad = c.createLinearGradient(x, y, x + w, y + h);
+            grad.addColorStop(0, isBottom ? shiftHex(pal.bg, pal.isDarkBg ? 10 : -8) : pal.bg);
+            grad.addColorStop(1, isBottom ? pal.bgEnd : shiftHex(pal.bgEnd, pal.isDarkBg ? 6 : -4));
+            c.fillStyle = grad;
+            c.fillRect(x, y, w, h);
+
+            const cx = x + w / 2;
+            const cy = y + h / 2;
+
+            c.save();
+            c.strokeStyle = rgba(pal.accent, 0.16);
+            c.lineWidth = 1.5;
+            c.strokeRect(x + 28, y + 28, w - 56, h - 56);
+
+            c.strokeStyle = rgba(pal.accent, 0.55);
+            c.lineWidth = 2;
+            c.beginPath();
+            c.arc(cx, cy - 22, 34, 0, Math.PI * 2);
+            c.stroke();
+
+            c.strokeStyle = pal.accent;
+            c.lineWidth = 2.4;
+            c.lineCap = 'round';
+            c.beginPath();
+            c.moveTo(cx - 12, cy - 22);
+            c.lineTo(cx + 12, cy - 22);
+            c.moveTo(cx, cy - 34);
+            c.lineTo(cx, cy - 10);
+            c.stroke();
+
+            c.fillStyle = pal.subText;
+            c.font = '500 20px "Montserrat", sans-serif';
+            c.textAlign = 'center';
+            c.textBaseline = 'middle';
+            c.fillText('Нажмите, чтобы загрузить', cx, cy + 36);
+
+            c.fillStyle = pal.accent;
+            c.font = '600 34px "Cormorant Garamond", Georgia, serif';
+            c.fillText(labelText, cx, cy + 76);
+            c.restore();
+        }
+
+        function drawPhotoInSlot(c, photoObj, x, y, w, h, placeholderLabel, pal, isBottom) {
+            c.save();
+            c.beginPath();
+            c.rect(x, y, w, h);
+            c.clip();
+
+            if (!photoObj.img) {
+                drawLuxuryPlaceholder(c, x, y, w, h, placeholderLabel, pal, isBottom);
+                c.restore();
+                return;
+            }
+
+            const img = photoObj.img;
+            const imgRatio = img.width / img.height;
+            const slotRatio = w / h;
+
+            let drawW, drawH;
+            if (imgRatio > slotRatio) {
+                drawH = h * photoObj.zoom;
+                drawW = drawH * imgRatio;
+            } else {
+                drawW = w * photoObj.zoom;
+                drawH = drawW / imgRatio;
+            }
+
+            const drawX = x + (w - drawW) / 2 + photoObj.offsetX;
+            const drawY = y + (h - drawH) / 2 + photoObj.offsetY;
+
+            try { c.filter = getCanvasFilterString(); } catch (_) { c.filter = 'none'; }
+            c.drawImage(img, drawX, drawY, drawW, drawH);
+            c.filter = 'none';
+            c.restore();
+        }
+
+        function drawMicroLabel(c, text, x, y, pal, tScale) {
+            c.save();
+            const fontSize = Math.round(16 * Math.min(1.45, Math.max(0.8, tScale)));
+            c.font = `600 ${fontSize}px "Montserrat", sans-serif`;
+            const tracked = text.split('').join('\u200A');
+            const textW = c.measureText(tracked).width;
+            const pillW = textW + Math.round(30 * Math.min(1.3, tScale));
+            const pillH = Math.round(32 * Math.min(1.4, Math.max(0.82, tScale)));
+
+            drawRoundedRect(c, x, y, pillW, pillH, 999);
+            c.fillStyle = pal.pillBg;
+            c.fill();
+            c.lineWidth = 1.2;
+            c.strokeStyle = pal.pillBorder;
+            c.stroke();
+
+            c.fillStyle = pal.text;
+            c.textAlign = 'center';
+            c.textBaseline = 'middle';
+            c.fillText(tracked, x + pillW / 2, y + pillH / 2 + 1);
+            c.restore();
+        }
+
+        function renderPhotoModes(w, h, pal) {
+            const tScale = state.textScale / 100;
+
+            ctx.fillStyle = pal.bg;
+            ctx.fillRect(0, 0, w, h);
+
+            const framePad = 14;
+            const innerX = framePad;
+            const innerY = framePad;
+            const innerW = w - framePad * 2;
+            const innerH = h - framePad * 2;
+            const halfY = Math.round(h / 2);
+
+            if (state.mode === 'single') {
+                drawPhotoInSlot(ctx, state.photos.before, innerX, innerY, innerW, innerH, 'фото работы', pal, false);
+            } else {
+                const topH = halfY - innerY;
+                const botH = innerY + innerH - halfY;
+                drawPhotoInSlot(ctx, state.photos.before, innerX, innerY, innerW, topH, 'фото «ДО»', pal, false);
+                drawPhotoInSlot(ctx, state.photos.after, innerX, halfY, innerW, botH, 'фото «ПОСЛЕ»', pal, true);
+
+                ctx.save();
+                ctx.fillStyle = rgba(pal.accent, 0.85);
+                ctx.fillRect(innerX, halfY - 1.5, innerW, 3);
+                ctx.restore();
+            }
+
+            drawGoldenGlowOverlay(ctx, w, h, pal, 0.65);
+
+            // Тонкая внутренняя рамка
+            ctx.save();
+            ctx.strokeStyle = rgba(pal.accent, 0.42);
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(innerX, innerY, innerW, innerH);
+            ctx.restore();
+
+            // Микро-метки «ДО» и «ПОСЛЕ» (масштабируются)
+            if (state.showLabels && state.mode === 'split') {
+                drawMicroLabel(ctx, 'ДО', innerX + 24, innerY + 24, pal, tScale);
+                drawMicroLabel(ctx, 'ПОСЛЕ', innerX + 24, halfY + 24, pal, tScale);
+            }
+
+            // Нижний блок контактов (масштабируется)
+            const contactsSpace = drawContactsBar(ctx, w, h, pal, true);
+
+            // Компактная плашка с названием процедуры (масштабируется)
+            const procText = state.procedure.trim();
+            if (procText) {
+                ctx.save();
+                const isMini = state.plateSize === 'mini';
+                const isSans = pal.titleFont === 'sans';
+                const baseFontSize = isMini
+                    ? (isSans ? 23 : 31)
+                    : (isSans ? 29 : 40);
+                const fontSize = Math.round(baseFontSize * tScale);
+
+                const fontStr = isSans
+                    ? `500 ${fontSize}px "Montserrat", sans-serif`
+                    : `600 ${fontSize}px "Cormorant Garamond", Georgia, serif`;
+
+                ctx.font = fontStr;
+                const padX = Math.round((isMini ? 32 : 42) * Math.min(1.35, tScale));
+                const padY = Math.round((isMini ? 12 : 16) * Math.min(1.35, tScale));
+                const maxPlateW = w - 84;
+                const measuredTextW = ctx.measureText(procText).width;
+                const plateW = Math.min(maxPlateW, Math.max(measuredTextW + padX * 2, Math.round((isMini ? 180 : 220) * Math.min(1.25, tScale))));
+                const plateH = Math.round(fontSize * 1.08 + padY * 2);
+                const plateX = (w - plateW) / 2;
+
+                const singleBottomY = h - Math.max(contactsSpace + 24, 68) - plateH;
+                const plateY = state.mode === 'split'
+                    ? halfY - plateH / 2
+                    : singleBottomY;
+
+                ctx.save();
+                ctx.shadowColor = pal.shadow;
+                ctx.shadowBlur = 24;
+                ctx.shadowOffsetY = 6;
+                drawRoundedRect(ctx, plateX, plateY, plateW, plateH, 999);
+                ctx.fillStyle = pal.plateBg;
+                ctx.fill();
+                ctx.restore();
+
+                drawRoundedRect(ctx, plateX, plateY, plateW, plateH, 999);
+                ctx.lineWidth = 1.4;
+                ctx.strokeStyle = pal.plateBorder;
+                ctx.stroke();
+
+                ctx.font = fontStr;
+                ctx.fillStyle = pal.text;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(procText, w / 2, plateY + plateH / 2 + 1, plateW - padX * 1.2);
+                ctx.restore();
+            }
+        }
+
+        // =========================================================================
+        // БЕСШОВНОЕ РАЗМЫТИЕ ФОТО НА ПОЛНОРАЗМЕРНОМ OFFSCREEN CANVAS
+        // =========================================================================
+        function applyLinearEdgeFade(c, w, h, x0, y0, x1, y1) {
+            c.save();
+            c.globalCompositeOperation = 'destination-in';
+            const grad = c.createLinearGradient(x0, y0, x1, y1);
+            SMOOTH_FEATHER_STOPS.forEach(([pos, alpha]) => {
+                grad.addColorStop(1 - pos, `rgba(0, 0, 0, ${alpha})`);
+            });
+            c.fillStyle = grad;
+            c.fillRect(0, 0, w, h);
+            c.restore();
+        }
+
+        function drawFeatheredSlotPhoto(w, h) {
+            const { placement, photo, areaSize, feather } = state.slots;
+            if (placement === 'none' || !photo.img) return;
+
+            if (offCanvas.width !== w || offCanvas.height !== h) {
+                offCanvas.width = w;
+                offCanvas.height = h;
+            }
+            offCtx.clearRect(0, 0, w, h);
+
+            const img = photo.img;
+            const imgRatio = img.width / img.height;
+
+            const s = (areaSize - 35) / 65; // 0..1
+            const f = (feather - 20) / 80;  // 0..1
+
+            let drawW, drawH, drawX, drawY;
+
+            if (placement === 'corner') {
+                const coverW = w * (0.62 + s * 0.56);
+                const coverH = h * (0.56 + s * 0.58);
+                const boxRatio = coverW / coverH;
+
+                if (imgRatio > boxRatio) {
+                    drawH = coverH * photo.zoom;
+                    drawW = drawH * imgRatio;
+                } else {
+                    drawW = coverW * photo.zoom;
+                    drawH = drawW / imgRatio;
+                }
+
+                const anchorX = w * (0.80 - s * 0.24);
+                const anchorY = h * (0.80 - s * 0.24);
+                drawX = anchorX - drawW / 2 + photo.offsetX;
+                drawY = anchorY - drawH / 2 + photo.offsetY;
+            } else {
+                const sideWidth = w * (0.35 + s * 0.55);
+                const boxRatio = sideWidth / h;
+
+                if (imgRatio > boxRatio) {
+                    drawH = h * photo.zoom;
+                    drawW = drawH * imgRatio;
+                } else {
+                    drawW = sideWidth * photo.zoom;
+                    drawH = drawW / imgRatio;
+                }
+
+                const anchorX = w - sideWidth * 0.48;
+                const anchorY = h * 0.5;
+                drawX = anchorX - drawW / 2 + photo.offsetX;
+                drawY = anchorY - drawH / 2 + photo.offsetY;
+            }
+
+            // 1. Рисуем исходную фотографию на полноразмерный offscreen canvas
+            offCtx.save();
+            offCtx.drawImage(img, drawX, drawY, drawW, drawH);
+            offCtx.restore();
+
+            // 2. Автоматическое мягкое размытие всех 4 сторон исходного фото, если его край виден внутри
+            const edgeFeatherPx = Math.max(60, Math.min(drawW, drawH) * (0.15 + f * 0.22));
+            if (drawX > -8) {
+                applyLinearEdgeFade(offCtx, w, h, drawX, 0, drawX + edgeFeatherPx, 0);
+            }
+            if (drawX + drawW < w + 8) {
+                applyLinearEdgeFade(offCtx, w, h, drawX + drawW, 0, drawX + drawW - edgeFeatherPx, 0);
+            }
+            if (drawY > -8) {
+                applyLinearEdgeFade(offCtx, w, h, 0, drawY, 0, drawY + edgeFeatherPx);
+            }
+            if (drawY + drawH < h + 8) {
+                applyLinearEdgeFade(offCtx, w, h, 0, drawY + drawH, 0, drawY + drawH - edgeFeatherPx);
+            }
+
+            // 3. Основная альфа-маска по форме размещения
+            if (placement === 'corner') {
+                offCtx.save();
+                offCtx.globalCompositeOperation = 'destination-in';
+
+                const cx = w * (0.94 - s * 0.24);
+                const cy = h * (0.94 - s * 0.24);
+                const diag = Math.hypot(w, h);
+                const outerR = diag * (0.34 + s * 0.60);
+                const innerRatio = 0.64 - f * 0.56;
+                const innerR = Math.max(8, outerR * innerRatio);
+
+                const radGrad = offCtx.createRadialGradient(cx, cy, innerR, cx, cy, outerR);
+                SMOOTH_FEATHER_STOPS.forEach(([pos, alpha]) => {
+                    radGrad.addColorStop(pos, `rgba(0, 0, 0, ${alpha})`);
+                });
+
+                offCtx.fillStyle = radGrad;
+                offCtx.fillRect(0, 0, w, h);
+                offCtx.restore();
+            } else if (placement === 'side') {
+                offCtx.save();
+                offCtx.globalCompositeOperation = 'destination-in';
+
+                const zoneW = w * (0.35 + s * 0.55);
+                const leftZeroX = w - zoneW;
+                const fadeSpan = zoneW * (0.28 + f * 0.68);
+                const solidStartX = Math.min(w, leftZeroX + fadeSpan);
+
+                const linGrad = offCtx.createLinearGradient(solidStartX, 0, leftZeroX, 0);
+                SMOOTH_FEATHER_STOPS.forEach(([pos, alpha]) => {
+                    linGrad.addColorStop(pos, `rgba(0, 0, 0, ${alpha})`);
+                });
+
+                offCtx.fillStyle = linGrad;
+                offCtx.fillRect(0, 0, w, h);
+                offCtx.restore();
+
+                const vFade = h * (0.06 + f * 0.08);
+                applyLinearEdgeFade(offCtx, w, h, 0, 0, 0, vFade);
+                applyLinearEdgeFade(offCtx, w, h, 0, h, 0, h - vFade);
+            }
+
+            // 4. Переносим готовый бесшовный слой фото на главный холст
+            ctx.save();
+            ctx.globalAlpha = 0.94;
+            ctx.drawImage(offCanvas, 0, 0);
+            ctx.restore();
+        }
+
+        // =========================================================================
+        // РЕНДЕР ВКЛАДКИ 3 («Свободные окошки») С ПОЛНЫМ МАСШТАБИРОВАНИЕМ ТЕКСТА
+        // =========================================================================
+        function renderSlotsMode(w, h, pal) {
+            const tScale = state.textScale / 100;
+            // Щедрая базовая шкала (особенно на высоких сторис 9:16)
+            const ratioBoost = state.ratio === '9:16' ? 1.12 : (state.ratio === '1:1' ? 0.94 : 1.0);
+            const eff = tScale * ratioBoost;
+
+            // 1. Фон
+            const bgGrad = ctx.createLinearGradient(0, 0, w * 0.85, h);
+            bgGrad.addColorStop(0, pal.bg);
+            bgGrad.addColorStop(1, pal.bgEnd);
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, w, h);
+
+            // 2. Эффект золотого свечения
+            drawGoldenGlowOverlay(ctx, w, h, pal, 1.0);
+
+            // 3. Бесшовное фото
+            drawFeatheredSlotPhoto(w, h);
+
+            // 4. Защитный мягкий градиент (scrim) за текстом, чтобы расписание всегда было чётким
+            const hasPhoto = state.slots.placement !== 'none' && Boolean(state.slots.photo.img);
+            if (hasPhoto) {
+                const s = (state.slots.areaSize - 35) / 65;
+                const shieldAlpha = 0.30 + s * 0.56;
+                ctx.save();
+                if (state.slots.placement === 'side') {
+                    const g = ctx.createLinearGradient(0, 0, w * (0.60 + s * 0.18), 0);
+                    g.addColorStop(0, rgba(pal.bg, Math.min(0.92, shieldAlpha + 0.12)));
+                    g.addColorStop(0.55, rgba(pal.bg, shieldAlpha * 0.68));
+                    g.addColorStop(1, rgba(pal.bg, 0));
+                    ctx.fillStyle = g;
+                    ctx.fillRect(0, 0, w, h);
+                } else {
+                    const g = ctx.createRadialGradient(w * 0.24, h * 0.34, w * 0.06, w * 0.28, h * 0.42, w * 0.90);
+                    g.addColorStop(0, rgba(pal.bg, Math.min(0.90, shieldAlpha + 0.10)));
+                    g.addColorStop(0.58, rgba(pal.bg, shieldAlpha * 0.55));
+                    g.addColorStop(1, rgba(pal.bg, 0));
+                    ctx.fillStyle = g;
+                    ctx.fillRect(0, 0, w, h);
+                }
+                ctx.restore();
+            }
+
+            // Тонкая люксовая рамка по периметру
+            ctx.save();
+            ctx.strokeStyle = rgba(pal.accent, 0.28);
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(26, 26, w - 52, h - 52);
+            ctx.restore();
+
+            const isStories = state.ratio === '9:16';
+            const isSquare = state.ratio === '1:1';
+            const padX = 68;
+            const topPad = isStories ? 128 : (isSquare ? 66 : 82);
+
+            // 5. Подзаголовок месяца + золотая линия
+            ctx.save();
+            const monthText = getMonthHeader();
+            const monthFontSize = Math.round(23 * eff);
+            const monthTrack = Math.round(5 * eff);
+            ctx.font = `600 ${monthFontSize}px "Montserrat", sans-serif`;
+            ctx.fillStyle = pal.accent;
+            ctx.textBaseline = 'middle';
+            drawTrackedText(ctx, monthText, padX, topPad, monthTrack, 'left');
+
+            let monthW = 0;
+            Array.from(monthText).forEach((ch, i) => {
+                monthW += ctx.measureText(ch).width + (i < monthText.length - 1 ? monthTrack : 0);
+            });
+            const lineStartX = padX + monthW + 22;
+            if (lineStartX + 40 < w - padX) {
+                ctx.strokeStyle = rgba(pal.accent, 0.72);
+                ctx.lineWidth = 1.6;
+                ctx.beginPath();
+                ctx.moveTo(lineStartX, topPad);
+                ctx.lineTo(Math.min(w - padX, lineStartX + 160), topPad);
+                ctx.stroke();
+            }
+
+            // 6. Главный заголовок («СВОБОДНЫЕ ОКОШКИ»)
+            const headerText = (state.slots.header || 'СВОБОДНЫЕ ОКОШКИ').trim();
+            const hasSidePhoto = state.slots.placement === 'side' && Boolean(state.slots.photo.img);
+            const headerMaxW = hasSidePhoto ? Math.max(w * 0.60, w - padX * 2 - 220) : (w - padX * 2);
+
+            let titleFontSize = Math.round((pal.titleFont === 'sans' ? 56 : 74) * eff);
+            // Мягко ограничиваем потолок, чтобы даже на 165% заголовок красиво переносился
+            titleFontSize = Math.min(titleFontSize, pal.titleFont === 'sans' ? 92 : 118);
+
+            const makeTitleFont = (sz) => pal.titleFont === 'sans'
+                ? `600 ${sz}px "Montserrat", sans-serif`
+                : `600 ${sz}px "Cormorant Garamond", Georgia, serif`;
+
+            ctx.font = makeTitleFont(titleFontSize);
+            // Если самое длинное слово шире доступной ширины — аккуратно поджимаем шрифт
+            const longestWordW = Math.max(...headerText.split(/\s+/).map(word => ctx.measureText(word).width));
+            if (longestWordW > headerMaxW) {
+                titleFontSize = Math.floor(titleFontSize * (headerMaxW / longestWordW));
+                ctx.font = makeTitleFont(titleFontSize);
+            }
+
+            const titleY = topPad + Math.round(titleFontSize * 0.96);
+            ctx.fillStyle = pal.accent;
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'alphabetic';
+
+            const headerLines = wrapTextLines(ctx, headerText, headerMaxW);
+            const headerLineH = Math.round(titleFontSize * 1.05);
+            headerLines.forEach((line, idx) => {
+                ctx.fillText(line, padX, titleY + idx * headerLineH);
+            });
+
+            const afterHeaderY = titleY + (headerLines.length - 1) * headerLineH + Math.round(24 * Math.min(1.25, eff));
+            ctx.strokeStyle = rgba(pal.accent, 0.45);
+            ctx.lineWidth = 1.3;
+            ctx.beginPath();
+            ctx.moveTo(padX, afterHeaderY);
+            ctx.lineTo(padX + Math.min(w - padX * 2, Math.round(220 * Math.min(1.3, eff))), afterHeaderY);
+            ctx.stroke();
+            ctx.restore();
+
+            // 7. Нижний блок контактов (всегда поверх фото!)
+            const contactsSpace = drawContactsBar(ctx, w, h, pal, false);
+            const noteText = state.slots.note.trim();
+            const noteFontSize = Math.round(22 * eff);
+            const noteLineH = Math.round(noteFontSize * 1.32);
+
+            let noteLines = [];
+            if (noteText) {
+                ctx.save();
+                ctx.font = `500 ${noteFontSize}px "Montserrat", sans-serif`;
+                noteLines = wrapTextLines(ctx, noteText, w - padX * 2);
+                ctx.restore();
+            }
+            const noteReserve = noteLines.length > 0 ? (noteLines.length * noteLineH + 34) : 20;
+
+            const listTop = afterHeaderY + Math.round(38 * Math.min(1.25, eff));
+            const listMaxY = h - contactsSpace - noteReserve - 16;
+
+            // 8. Расписание окошек (даты + пилюли времени + автоперенос)
+            const rows = state.slots.rows;
+            const maxScheduleW = hasSidePhoto ? (w * 0.58) : (w - padX * 2);
+
+            if (rows.length === 0) {
+                ctx.save();
+                ctx.font = `400 ${Math.round(26 * eff)}px "Montserrat", sans-serif`;
+                ctx.fillStyle = pal.subText;
+                ctx.textAlign = 'left';
+                ctx.fillText('Выберите дату и время ниже,', padX, listTop + 34);
+                ctx.fillText('и расписание появится здесь', padX, listTop + 34 + Math.round(36 * eff));
+                ctx.restore();
+            } else {
+                const dense = rows.length >= 6 || (isSquare && rows.length >= 4);
+                const denseFactor = dense ? 0.86 : 1.0;
+                const rowScale = eff * denseFactor;
+
+                const dateFontSize = Math.round(31 * rowScale);
+                const timeFontSize = Math.round(25 * rowScale);
+                const pillH = Math.round(48 * rowScale);
+                const pillPadX = Math.round(22 * rowScale);
+                const pillGapX = Math.round(12 * rowScale);
+                const pillGapY = Math.round(11 * rowScale);
+                const rowGap = Math.round(26 * rowScale);
+                const dotRadius = Math.max(4, Math.round(5 * rowScale));
+
+                let curY = listTop;
+
+                rows.forEach((row, idx) => {
+                    if (curY + dateFontSize + pillH > listMaxY) return;
+
+                    const hasCornerPhoto = state.slots.placement === 'corner' && Boolean(state.slots.photo.img);
+                    const rowMaxW = (hasCornerPhoto && state.slots.areaSize < 78 && curY > h * 0.54)
+                        ? Math.min(maxScheduleW, w * 0.58)
+                        : maxScheduleW;
+
+                    ctx.save();
+                    // Акцентная точка перед датой
+                    ctx.fillStyle = pal.accent;
+                    ctx.beginPath();
+                    ctx.arc(padX - Math.round(20 * Math.min(1.25, rowScale)), curY + dateFontSize * 0.54, dotRadius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Дата (напр. «25 ноября (Ср)»)
+                    ctx.font = `600 ${dateFontSize}px "Montserrat", sans-serif`;
+                    ctx.fillStyle = pal.text;
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+                    ctx.fillText(formatDateRussian(row.date), padX, curY, rowMaxW);
+
+                    // Слоты времени с автоматическим переносом строк
+                    let pillX = padX;
+                    let pillY = curY + dateFontSize + Math.round(14 * rowScale);
+                    ctx.font = `500 ${timeFontSize}px "Montserrat", sans-serif`;
+
+                    row.times.forEach((t) => {
+                        const tw = ctx.measureText(t).width;
+                        const pw = Math.min(rowMaxW, tw + pillPadX * 2);
+
+                        if (pillX + pw > padX + rowMaxW && pillX > padX) {
+                            pillX = padX;
+                            pillY += pillH + pillGapY;
+                        }
+
+                        drawRoundedRect(ctx, pillX, pillY, pw, pillH, 999);
+                        ctx.fillStyle = pal.badgeBg;
+                        ctx.fill();
+                        ctx.lineWidth = 1.3;
+                        ctx.strokeStyle = pal.badgeBorder;
+                        ctx.stroke();
+
+                        ctx.fillStyle = pal.text;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(t, pillX + pw / 2, pillY + pillH / 2 + 1);
+
+                        pillX += pw + pillGapX;
+                    });
+
+                    const rowBottom = pillY + pillH;
+
+                    if (idx < rows.length - 1) {
+                        const lineY = rowBottom + rowGap / 2;
+                        ctx.strokeStyle = pal.divider;
+                        ctx.lineWidth = 1.1;
+                        ctx.beginPath();
+                        ctx.moveTo(padX, lineY);
+                        ctx.lineTo(padX + Math.min(rowMaxW, 480), lineY);
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                    curY = rowBottom + rowGap;
+                });
+            }
+
+            // 9. Заметка под расписанием (масштабируется)
+            if (noteLines.length > 0) {
+                ctx.save();
+                ctx.font = `500 ${noteFontSize}px "Montserrat", sans-serif`;
+                ctx.fillStyle = pal.subText;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
+
+                const noteBottomY = h - contactsSpace - 24;
+                const startY = noteBottomY - (noteLines.length - 1) * noteLineH;
+
+                noteLines.forEach((line, i) => {
+                    ctx.fillText(line, padX, startY + i * noteLineH);
+                });
+                ctx.restore();
+            }
+        }
+
+        // =========================================================================
+        // ГЛАВНЫЙ РЕНДЕР КАНВАСА
+        // =========================================================================
+        function renderCanvas() {
+            const { w, h } = RATIO_SIZES[state.ratio];
+            if (canvas.width !== w || canvas.height !== h) {
+                canvas.width = w;
+                canvas.height = h;
+            }
+            document.getElementById('previewMetaLabel').textContent = `${w}×${h}`;
+
+            const pal = getResolvedPalette();
+            ctx.clearRect(0, 0, w, h);
+
+            if (state.mode === 'slots') {
+                renderSlotsMode(w, h, pal);
+            } else {
+                renderPhotoModes(w, h, pal);
+            }
+        }
+
+        // =========================================================================
+        // ЗАГРУЗКА ФОТО И ПЕРЕТАСКИВАНИЕ ПАЛЬЦЕМ (PAN)
+        // =========================================================================
+        function loadFileIntoPhotoObj(file, targetObj, onDone) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    targetObj.img = img;
+                    targetObj.zoom = 1;
+                    targetObj.offsetX = 0;
+                    targetObj.offsetY = 0;
+                    if (onDone) onDone();
+                    updateDragHint();
+                    renderCanvas();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        fileBefore.addEventListener('change', (e) => {
+            loadFileIntoPhotoObj(e.target.files[0], state.photos.before, () => {
+                state.activePhotoTab = 'before';
+                syncPhotoControlsUI();
+            });
+            e.target.value = '';
+        });
+
+        fileAfter.addEventListener('change', (e) => {
+            loadFileIntoPhotoObj(e.target.files[0], state.photos.after, () => {
+                state.activePhotoTab = 'after';
+                syncPhotoControlsUI();
+            });
+            e.target.value = '';
+        });
+
+        fileSlotPhoto.addEventListener('change', (e) => {
+            loadFileIntoPhotoObj(e.target.files[0], state.slots.photo, () => {
+                if (state.slots.placement === 'none') {
+                    state.slots.placement = 'corner';
+                    syncPlacementUI();
+                }
+                slotZoomSlider.value = 1;
+                document.getElementById('slotZoomVal').textContent = '100%';
+            });
+            e.target.value = '';
+        });
+
+        document.getElementById('uploadBeforeBtn').addEventListener('click', () => fileBefore.click());
+        document.getElementById('uploadAfterBtn').addEventListener('click', () => fileAfter.click());
+        document.getElementById('uploadSlotPhotoBtn').addEventListener('click', () => fileSlotPhoto.click());
+
+        let isDragging = false;
+        let dragMoved = false;
+        let dragTarget = null;
+        let startX = 0, startY = 0;
+        let initOffX = 0, initOffY = 0;
+
+        canvas.addEventListener('pointerdown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const cy = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+            if (state.mode === 'slots') {
+                if (state.slots.placement === 'none' || !state.slots.photo.img) return;
+                dragTarget = 'slot';
+                initOffX = state.slots.photo.offsetX;
+                initOffY = state.slots.photo.offsetY;
+            } else {
+                dragTarget = state.mode === 'single' ? 'before' : (cy < canvas.height / 2 ? 'before' : 'after');
+                state.activePhotoTab = dragTarget;
+                syncPhotoControlsUI();
+                initOffX = state.photos[dragTarget].offsetX;
+                initOffY = state.photos[dragTarget].offsetY;
+            }
+
+            isDragging = true;
+            dragMoved = false;
+            startX = e.clientX;
+            startY = e.clientY;
+            canvas.setPointerCapture(e.pointerId);
+        });
+
+        canvas.addEventListener('pointermove', (e) => {
+            if (!isDragging || !dragTarget) return;
+            const photoObj = dragTarget === 'slot' ? state.slots.photo : state.photos[dragTarget];
+            if (!photoObj.img) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const dx = (e.clientX - startX) * (canvas.width / rect.width);
+            const dy = (e.clientY - startY) * (canvas.height / rect.height);
+
+            if (Math.abs(dx) > 4 || Math.abs(dy) > 4) dragMoved = true;
+
+            photoObj.offsetX = Math.max(-750, Math.min(750, Math.round(initOffX + dx)));
+            photoObj.offsetY = Math.max(-750, Math.min(750, Math.round(initOffY + dy)));
+            renderCanvas();
+        });
+
+        canvas.addEventListener('pointerup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+
+            if (!dragMoved && state.mode !== 'slots') {
+                const photoObj = state.photos[dragTarget];
+                if (!photoObj.img) {
+                    if (dragTarget === 'before') fileBefore.click();
+                    else fileAfter.click();
+                }
+            }
+            dragTarget = null;
+        });
+
+        canvas.addEventListener('pointercancel', () => {
+            isDragging = false;
+            dragTarget = null;
+        });
+
+        // =========================================================================
+        // ПАЛИТРА И 8 ЛЮКСОВЫХ ТЕМ
+        // =========================================================================
+        function renderThemeCards() {
+            const grid = document.getElementById('themesGrid');
+            grid.innerHTML = '';
+
+            PRESET_THEMES.forEach((t) => {
+                const active = state.themeId === t.id;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `flex flex-col items-start gap-1.5 p-2.5 rounded-2xl border transition text-left min-w-0 ${
+                    active
+                        ? 'border-gold bg-surface2 ring-1 ring-gold/60 shadow-md shadow-gold/10'
+                        : 'border-hairline bg-obsidian/70 hover:border-gold/50'
+                }`;
+                btn.innerHTML = `
+                    <div class="flex items-center -space-x-1">
+                        <span class="w-4 h-4 rounded-full border border-white/25" style="background:${t.bg}"></span>
+                        <span class="w-4 h-4 rounded-full border border-white/25" style="background:${t.accent}"></span>
+                        <span class="w-4 h-4 rounded-full border border-white/25" style="background:${t.text}"></span>
+                    </div>
+                    <span class="text-[11px] font-semibold text-ivory leading-tight truncate w-full">${t.name}</span>
+                `;
+                btn.addEventListener('click', () => {
+                    state.themeId = t.id;
+                    state.bgColor = t.bg;
+                    state.accentColor = t.accent;
+                    state.presetTextColor = t.text;
+                    state.titleFont = t.titleFont;
+                    state.goldenGlow = t.glow;
+                    syncPaletteUI();
+                    renderCanvas();
+                });
+                grid.appendChild(btn);
+            });
+        }
+
+        function syncPaletteUI() {
+            customBgPicker.value = state.bgColor;
+            customAccentPicker.value = state.accentColor;
+            document.getElementById('bgHexLabel').textContent = state.bgColor.toUpperCase();
+            document.getElementById('accentHexLabel').textContent = state.accentColor.toUpperCase();
+            document.getElementById('customColorBadge').classList.toggle('hidden', state.themeId !== 'custom');
+            toggleGlowCheck.checked = state.goldenGlow;
+            renderThemeCards();
+        }
+
+        customBgPicker.addEventListener('input', (e) => {
+            state.bgColor = e.target.value;
+            state.themeId = 'custom';
+            syncPaletteUI();
+            renderCanvas();
+        });
+
+        customAccentPicker.addEventListener('input', (e) => {
+            state.accentColor = e.target.value;
+            state.themeId = 'custom';
+            syncPaletteUI();
+            renderCanvas();
+        });
+
+        toggleGlowCheck.addEventListener('change', (e) => {
+            state.goldenGlow = e.target.checked;
+            renderCanvas();
+        });
+
+        // =========================================================================
+        // КОНСТРУКТОР ОКОШЕК
+        // =========================================================================
+        function renderTimeChips() {
+            const container = document.getElementById('timeChipsContainer');
+            container.innerHTML = '';
+            const allTimes = Array.from(new Set([...QUICK_TIMES, ...state.slots.selectedTimes])).sort();
+
+            allTimes.forEach((timeStr) => {
+                const isSelected = state.slots.selectedTimes.has(timeStr);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = timeStr;
+                btn.className = `px-3 py-1.5 rounded-full text-xs font-semibold border transition active:scale-95 ${
+                    isSelected
+                        ? 'bg-gold text-obsidian border-gold shadow-sm'
+                        : 'bg-surface2 text-ivory border-hairline hover:border-gold/60'
+                }`;
+                btn.addEventListener('click', () => {
+                    if (state.slots.selectedTimes.has(timeStr)) state.slots.selectedTimes.delete(timeStr);
+                    else state.slots.selectedTimes.add(timeStr);
+                    renderTimeChips();
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        function renderAddedSlotsList() {
+            const list = document.getElementById('addedSlotsList');
+            document.getElementById('slotsCountLabel').textContent = String(state.slots.rows.length);
+
+            if (state.slots.rows.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-5 px-3 rounded-2xl bg-obsidian/60 border border-dashed border-hairline text-xs text-muted">
+                        Пока нет дат. Выберите день и время выше и нажмите «+ Добавить строчку».
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = '';
+            state.slots.rows.forEach((row, rowIdx) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-start justify-between gap-2 p-3 rounded-2xl bg-surface2 border border-hairline';
+
+                const left = document.createElement('div');
+                left.className = 'min-w-0 flex-1';
+
+                const dateTitle = document.createElement('div');
+                dateTitle.className = 'text-xs font-semibold text-gold-soft mb-1.5';
+                dateTitle.textContent = formatDateRussian(row.date);
+                left.appendChild(dateTitle);
+
+                const tagsWrap = document.createElement('div');
+                tagsWrap.className = 'flex flex-wrap gap-1.5';
+
+                row.times.forEach((t) => {
+                    const tag = document.createElement('button');
+                    tag.type = 'button';
+                    tag.title = 'Удалить время';
+                    tag.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-obsidian border border-hairline text-[11px] font-medium text-ivory hover:border-rose-400 hover:text-rose-300 transition';
+                    tag.innerHTML = `<span>${t}</span><span class="text-muted text-[10px]">×</span>`;
+                    tag.addEventListener('click', () => {
+                        row.times = row.times.filter(x => x !== t);
+                        if (row.times.length === 0) state.slots.rows.splice(rowIdx, 1);
+                        renderAddedSlotsList();
+                        renderCanvas();
+                    });
+                    tagsWrap.appendChild(tag);
+                });
+
+                left.appendChild(tagsWrap);
+
+                const delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.title = 'Удалить дату';
+                delBtn.className = 'p-1.5 rounded-xl text-muted hover:text-rose-400 hover:bg-rose-500/10 transition shrink-0';
+                delBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`;
+                delBtn.addEventListener('click', () => {
+                    state.slots.rows.splice(rowIdx, 1);
+                    renderAddedSlotsList();
+                    renderCanvas();
+                });
+
+                item.appendChild(left);
+                item.appendChild(delBtn);
+                list.appendChild(item);
+            });
+        }
+
+        document.getElementById('clearSelectedTimesBtn').addEventListener('click', () => {
+            state.slots.selectedTimes.clear();
+            renderTimeChips();
+        });
+
+        document.getElementById('addCustomTimeBtn').addEventListener('click', () => {
+            const val = customTimeInput.value;
+            if (!val) return;
+            state.slots.selectedTimes.add(val);
+            renderTimeChips();
+            showToast(`Добавлено время ${val}`);
+        });
+
+        document.getElementById('addSlotRowBtn').addEventListener('click', () => {
+            const dateVal = slotDateInput.value;
+            if (!dateVal) return showToast('Выберите дату в календаре');
+
+            const timesArr = Array.from(state.slots.selectedTimes).sort();
+            if (timesArr.length === 0) return showToast('Отметьте хотя бы одно время');
+
+            const existing = state.slots.rows.find(r => r.date === dateVal);
+            if (existing) {
+                existing.times = Array.from(new Set([...existing.times, ...timesArr])).sort();
+                showToast(`Обновлено: ${formatDateRussian(dateVal)}`);
+            } else {
+                state.slots.rows.push({ date: dateVal, times: timesArr });
+                state.slots.rows.sort((a, b) => a.date.localeCompare(b.date));
+                showToast(`Добавлено: ${formatDateRussian(dateVal)}`);
+            }
+
+            slotDateInput.value = addDaysISO(dateVal, 1);
+            renderAddedSlotsList();
+            renderCanvas();
+        });
+
+        document.getElementById('clearAllSlotsBtn').addEventListener('click', () => {
+            state.slots.rows = [];
+            renderAddedSlotsList();
+            renderCanvas();
+            showToast('Список очищен');
+        });
+
+        // =========================================================================
+        // СИНХРОНИЗАЦИЯ UI И ОБРАБОТЧИКИ
+        // =========================================================================
+        function updateDragHint() {
+            const hint = document.getElementById('dragHint');
+            if (state.mode === 'slots') {
+                if (state.slots.placement === 'none') hint.textContent = 'Текстовый баннер';
+                else if (state.slots.photo.img) hint.textContent = 'Двигайте фото пальцем';
+                else hint.textContent = 'Загрузите фото ниже';
+            } else {
+                const hasAny = state.photos.before.img || state.photos.after.img;
+                hint.textContent = hasAny ? 'Двигайте фото пальцем' : 'Нажмите на фото';
+            }
+        }
+
+        function syncModeUI() {
+            const isSlots = state.mode === 'slots';
+            const isSingle = state.mode === 'single';
+
+            document.querySelectorAll('.mode-tab').forEach(btn => {
+                const active = btn.dataset.mode === state.mode;
+                btn.className = `mode-tab min-w-0 py-2 px-1 rounded-xl text-[11px] sm:text-xs font-semibold transition flex items-center justify-center gap-1 ${
+                    active ? 'bg-gold text-obsidian shadow-sm' : 'text-muted hover:text-ivory'
+                }`;
+            });
+
+            document.getElementById('photoModesPanel').classList.toggle('hidden', isSlots);
+            document.getElementById('slotsModePanel').classList.toggle('hidden', !isSlots);
+
+            if (!isSlots) {
+                document.getElementById('uploadAfterBtn').classList.toggle('hidden', isSingle);
+                document.getElementById('photoUploadGrid').classList.toggle('grid-cols-1', isSingle);
+                document.getElementById('photoUploadGrid').classList.toggle('grid-cols-2', !isSingle);
+                document.getElementById('uploadBeforeLabel').textContent = isSingle ? 'Выбрать фото' : 'Фото ДО';
+
+                document.getElementById('photoTabGroup').classList.toggle('hidden', isSingle);
+                document.getElementById('labelsToggleRow').classList.toggle('opacity-40', isSingle);
+                document.getElementById('labelsToggleRow').classList.toggle('pointer-events-none', isSingle);
+
+                if (isSingle) {
+                    state.activePhotoTab = 'before';
+                    syncPhotoControlsUI();
+                }
+            }
+            updateDragHint();
+        }
+
+        function syncRatioUI() {
+            document.querySelectorAll('.ratio-btn').forEach(btn => {
+                const active = btn.dataset.ratio === state.ratio;
+                btn.className = `ratio-btn px-2 sm:px-3 py-1 rounded-lg text-[10px] sm:text-[11px] font-semibold transition ${
+                    active ? 'bg-gold text-obsidian' : 'text-muted hover:text-ivory'
+                }`;
+            });
+        }
+
+        function syncSizeUI() {
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                const active = btn.dataset.size === state.plateSize;
+                btn.className = `size-btn px-2.5 py-1 rounded-lg text-[11px] font-medium transition ${
+                    active ? 'bg-gold text-obsidian font-semibold' : 'text-muted hover:text-ivory'
+                }`;
+            });
+        }
+
+        function syncProcChipsUI() {
+            document.querySelectorAll('.proc-chip').forEach(chip => {
+                const active = chip.dataset.text === state.procedure;
+                chip.className = `proc-chip px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                    active
+                        ? 'bg-gold text-obsidian border-gold font-semibold'
+                        : 'bg-surface2 text-ivory border-hairline hover:border-gold/60'
+                }`;
+            });
+        }
+
+        function syncPhotoControlsUI() {
+            const p = state.photos[state.activePhotoTab];
+            zoomSlider.value = p.zoom;
+            document.getElementById('zoomVal').textContent = Math.round(p.zoom * 100) + '%';
+
+            document.querySelectorAll('.photo-tab-btn').forEach(btn => {
+                const active = btn.dataset.tab === state.activePhotoTab;
+                btn.className = `photo-tab-btn py-1.5 rounded-xl text-xs font-medium transition ${
+                    active ? 'bg-gold text-obsidian font-semibold' : 'text-muted hover:text-ivory'
+                }`;
+            });
+        }
+
+        function syncColorUI() {
+            brightnessSlider.value = state.brightness;
+            warmthSlider.value = state.warmth;
+            contrastSlider.value = state.contrast;
+            document.getElementById('brightnessVal').textContent = (state.brightness > 0 ? '+' : '') + state.brightness;
+            document.getElementById('warmthVal').textContent = state.warmth;
+            document.getElementById('contrastVal').textContent = (state.contrast > 0 ? '+' : '') + state.contrast;
+        }
+
+        function syncPlacementUI() {
+            document.querySelectorAll('.placement-btn').forEach(btn => {
+                const active = btn.dataset.placement === state.slots.placement;
+                btn.className = `placement-btn py-2 px-1.5 rounded-xl text-xs font-medium transition ${
+                    active ? 'bg-gold text-obsidian font-semibold' : 'text-muted hover:text-ivory'
+                }`;
+            });
+            document.getElementById('slotPhotoControls').classList.toggle('hidden', state.slots.placement === 'none');
+            updateDragHint();
+        }
+
+        function syncTextScaleUI() {
+            textScaleSlider.value = state.textScale;
+            document.getElementById('textScaleVal').textContent = state.textScale + '%';
+        }
+
+        // Масштаб текста
+        textScaleSlider.addEventListener('input', (e) => {
+            state.textScale = parseInt(e.target.value, 10);
+            syncTextScaleUI();
+            renderCanvas();
+        });
+        document.getElementById('resetTextScaleBtn').addEventListener('click', () => {
+            state.textScale = 110;
+            syncTextScaleUI();
+            renderCanvas();
+        });
+
+        // Режимы и форматы
+        document.querySelectorAll('.mode-tab').forEach(btn => btn.addEventListener('click', () => {
+            state.mode = btn.dataset.mode;
+            syncModeUI();
+            renderCanvas();
+        }));
+
+        document.querySelectorAll('.ratio-btn').forEach(btn => btn.addEventListener('click', () => {
+            state.ratio = btn.dataset.ratio;
+            syncRatioUI();
+            renderCanvas();
+        }));
+
+        document.querySelectorAll('.size-btn').forEach(btn => btn.addEventListener('click', () => {
+            state.plateSize = btn.dataset.size;
+            syncSizeUI();
+            renderCanvas();
+        }));
+
+        document.querySelectorAll('.proc-chip').forEach(chip => chip.addEventListener('click', () => {
+            state.procedure = chip.dataset.text;
+            procedureInput.value = state.procedure;
+            syncProcChipsUI();
+            renderCanvas();
+        }));
+
+        procedureInput.addEventListener('input', (e) => {
+            state.procedure = e.target.value;
+            syncProcChipsUI();
+            renderCanvas();
+        });
+
+        document.querySelectorAll('.photo-tab-btn').forEach(btn => btn.addEventListener('click', () => {
+            state.activePhotoTab = btn.dataset.tab;
+            syncPhotoControlsUI();
+        }));
+
+        zoomSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            state.photos[state.activePhotoTab].zoom = val;
+            document.getElementById('zoomVal').textContent = Math.round(val * 100) + '%';
+            renderCanvas();
+        });
+
+        document.getElementById('resetPhotoPosBtn').addEventListener('click', () => {
+            const p = state.photos[state.activePhotoTab];
+            p.zoom = 1;
+            p.offsetX = 0;
+            p.offsetY = 0;
+            syncPhotoControlsUI();
+            renderCanvas();
+        });
+
+        brightnessSlider.addEventListener('input', (e) => { state.brightness = parseInt(e.target.value, 10); syncColorUI(); renderCanvas(); });
+        warmthSlider.addEventListener('input', (e) => { state.warmth = parseInt(e.target.value, 10); syncColorUI(); renderCanvas(); });
+        contrastSlider.addEventListener('input', (e) => { state.contrast = parseInt(e.target.value, 10); syncColorUI(); renderCanvas(); });
+        document.getElementById('resetColorBtn').addEventListener('click', () => {
+            state.brightness = 0; state.warmth = 0; state.contrast = 0;
+            syncColorUI(); renderCanvas();
+        });
+
+        toggleLabelsCheck.addEventListener('change', (e) => {
+            state.showLabels = e.target.checked;
+            renderCanvas();
+        });
+
+        // Настройки фото в «Свободных окошках»
+        document.querySelectorAll('.placement-btn').forEach(btn => btn.addEventListener('click', () => {
+            state.slots.placement = btn.dataset.placement;
+            syncPlacementUI();
+            renderCanvas();
+        }));
+
+        slotAreaSizeSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value, 10);
+            state.slots.areaSize = val;
+            document.getElementById('slotAreaSizeVal').textContent = val + '%';
+            renderCanvas();
+        });
+
+        slotZoomSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            state.slots.photo.zoom = val;
+            document.getElementById('slotZoomVal').textContent = Math.round(val * 100) + '%';
+            renderCanvas();
+        });
+
+        slotFeatherSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value, 10);
+            state.slots.feather = val;
+            document.getElementById('slotFeatherVal').textContent = val + '%';
+            renderCanvas();
+        });
+
+        document.getElementById('resetSlotPhotoBtn').addEventListener('click', () => {
+            state.slots.photo.zoom = 1;
+            state.slots.photo.offsetX = 0;
+            state.slots.photo.offsetY = 0;
+            slotZoomSlider.value = 1;
+            document.getElementById('slotZoomVal').textContent = '100%';
+            renderCanvas();
+        });
+
+        slotHeaderInput.addEventListener('input', (e) => { state.slots.header = e.target.value; renderCanvas(); });
+        slotMonthInput.addEventListener('input', (e) => { state.slots.customMonth = e.target.value; renderCanvas(); });
+        slotNoteInput.addEventListener('input', (e) => { state.slots.note = e.target.value; renderCanvas(); });
+
+        // Контакты
+        toggleContactsCheck.addEventListener('change', (e) => {
+            state.showContacts = e.target.checked;
+            document.getElementById('contactsInputsWrap').classList.toggle('hidden', !state.showContacts);
+            renderCanvas();
+        });
+        contactPhoneInput.addEventListener('input', (e) => { state.contactPhone = e.target.value; renderCanvas(); });
+        contactVkInput.addEventListener('input', (e) => { state.contactVk = e.target.value; renderCanvas(); });
+
+        // =========================================================================
+        // ЭКСПОРТ PNG (1080px)
+        // =========================================================================
+        let toastTimer = null;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastText').textContent = msg;
+            toast.classList.remove('opacity-0', '-translate-y-3');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-3');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2400);
+        }
+
+        function downloadCard() {
+            try {
+                renderCanvas();
+                const prefix = state.mode === 'slots' ? 'bel-okoshki' : 'bel-card';
+                const slug = state.ratio.replace(':', 'x');
+                const fileName = `${prefix}-${slug}-${Date.now().toString().slice(-4)}.png`;
+
+                if (canvas.toBlob) {
+                    canvas.toBlob((blob) => {
+                        if (!blob) return fallbackDownload(fileName);
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        setTimeout(() => URL.revokeObjectURL(url), 1500);
+                        showToast('Сохранено в HD (1080px)!');
+                    }, 'image/png', 1.0);
+                } else {
+                    fallbackDownload(fileName);
+                }
+            } catch (_) {
+                showToast('Не удалось сохранить, попробуйте ещё раз');
+            }
+        }
+
+        function fallbackDownload(fileName) {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Сохранено в HD (1080px)!');
+        }
+
+        document.getElementById('mobileDownloadBtn').addEventListener('click', downloadCard);
+        document.getElementById('desktopDownloadBtn').addEventListener('click', downloadCard);
+        document.getElementById('headerDownloadBtn').addEventListener('click', downloadCard);
+
+        // =========================================================================
+        // ИНИЦИАЛИЗАЦИЯ (3 ГОТОВЫХ ПРИМЕРА ОКОШЕК НА 25, 26, 27 НОЯБРЯ)
+        // =========================================================================
+        function initSampleSlots() {
+            const year = new Date().getFullYear();
+            state.slots.rows = [
+                { date: `${year}-11-25`, times: ['09:00', '11:30', '14:00'] },
+                { date: `${year}-11-26`, times: ['10:00', '14:00', '17:00'] },
+                { date: `${year}-11-27`, times: ['11:00', '15:30'] }
+            ];
+            slotDateInput.value = `${year}-11-28`;
+        }
+
+        function init() {
+            initSampleSlots();
+            syncTextScaleUI();
+            syncModeUI();
+            syncRatioUI();
+            syncPaletteUI();
+            syncSizeUI();
+            syncProcChipsUI();
+            syncPhotoControlsUI();
+            syncColorUI();
+            syncPlacementUI();
+            renderTimeChips();
+            renderAddedSlotsList();
+            renderCanvas();
+
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => renderCanvas());
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
