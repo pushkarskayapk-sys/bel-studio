@@ -172,48 +172,25 @@
                             </span>
                         </div>
 
-                        <div id="previewTopUploadBar" class="mb-2 space-y-1.5">
-                            <div class="grid grid-cols-2 gap-2" id="photoUploadGrid">
-                                <button type="button" id="uploadBeforeBtn"
-                                    class="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl bg-surface2 border border-hairline hover:border-gold text-ivory text-[11px] font-semibold active:scale-[0.98] transition min-w-0">
-                                    <svg class="w-3.5 h-3.5 text-gold shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
-                                    </svg>
-                                    <span id="uploadBeforeLabel" class="truncate">Фото ДО</span>
-                                </button>
-                                <button type="button" id="uploadAfterBtn"
-                                    class="flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl bg-surface2 border border-hairline hover:border-gold text-ivory text-[11px] font-semibold active:scale-[0.98] transition min-w-0">
-                                    <svg class="w-3.5 h-3.5 text-gold shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
-                                    </svg>
-                                    <span class="truncate">Фото ПОСЛЕ</span>
-                                </button>
-                            </div>
-                            <div class="grid grid-cols-2 gap-1 bg-obsidian p-1 rounded-xl border border-hairline" id="photoTabGroup">
-                                <button type="button" data-tab="before" class="photo-tab-btn py-1 rounded-lg text-[11px] font-medium transition">Кадр «ДО»</button>
-                                <button type="button" data-tab="after" class="photo-tab-btn py-1 rounded-lg text-[11px] font-medium transition">Кадр «ПОСЛЕ»</button>
-                            </div>
-                        </div>
-
                         <div class="relative w-full flex items-center justify-center overflow-hidden rounded-2xl bg-black/60">
                             <canvas id="previewCanvas"
-                                class="block max-h-[36vh] sm:max-h-[44vh] lg:max-h-[62vh] w-auto max-w-full h-auto rounded-2xl cursor-grab active:cursor-grabbing"></canvas>
+                                class="block max-h-[38vh] sm:max-h-[46vh] lg:max-h-[64vh] w-auto max-w-full h-auto rounded-2xl cursor-grab active:cursor-grabbing"></canvas>
                         </div>
 
                         <div id="livePreviewQuickBar" class="mt-2 px-1 pt-2 border-t border-hairline/80 space-y-2">
                             <div class="flex flex-wrap items-center justify-between gap-1.5">
                                 <div class="flex flex-wrap items-center gap-1">
-                                    <button type="button" data-quick-tool="sharpness" class="quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-gold text-obsidian transition">Резкость</button>
-                                    <button type="button" data-quick-tool="rotation" class="quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-surface2 text-ivory/80 hover:text-gold-soft transition">Поворот</button>
-                                    <button type="button" data-quick-tool="zoom" class="quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-surface2 text-ivory/80 hover:text-gold-soft transition">Зум</button>
-                                    <button type="button" data-quick-tool="color" class="quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-surface2 text-ivory/80 hover:text-gold-soft transition">Свет/Цвет</button>
+                                    <button type="button" data-quick-tool="sharpness" onclick="selectQuickTool('sharpness')" class="quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-gold text-obsidian transition">Резкость</button>
+                                    <button type="button" data-quick-tool="rotation" onclick="selectQuickTool('rotation')" class="quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-surface2 text-ivory/80 hover:text-gold-soft transition">Поворот</button>
+                                    <button type="button" data-quick-tool="zoom" onclick="selectQuickTool('zoom')" class="quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-surface2 text-ivory/80 hover:text-gold-soft transition">Зум</button>
+                                    <button type="button" data-quick-tool="color" onclick="selectQuickTool('color')" class="quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-surface2 text-ivory/80 hover:text-gold-soft transition">Свет/Цвет</button>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <button type="button" id="openFullscreenPreviewBtn" onclick="openFullscreenPreview()"
                                         class="px-2.5 py-1 rounded-lg bg-surface2 border border-gold/50 text-[10px] font-semibold text-gold-soft hover:border-gold transition">
                                         Весь экран
                                     </button>
-                                    <button type="button" id="quickResetBtn"
+                                    <button type="button" id="quickResetBtn" onclick="resetQuickEdits()"
                                         class="text-[10px] text-gold hover:text-gold-soft underline underline-offset-2">
                                         Сброс
                                     </button>
@@ -226,7 +203,8 @@
                                         <span class="text-muted">Резкость (ресницы и детали)</span>
                                         <span id="quickSharpnessVal" class="font-semibold text-gold-soft">0%</span>
                                     </div>
-                                    <input type="range" id="quickSharpnessSlider" min="0" max="100" step="1" value="0" class="w-full">
+                                    <input type="range" id="quickSharpnessSlider" min="0" max="100" step="1" value="0" class="w-full"
+                                        oninput="onQuickSharpnessInput(this.value)">
                                 </div>
 
                                 <div id="quickTool-rotation" class="quick-tool-pane hidden space-y-1.5">
@@ -234,11 +212,12 @@
                                         <span class="text-muted">Угол</span>
                                         <div class="flex items-center gap-1.5">
                                             <span id="quickRotationVal" class="font-semibold text-gold-soft">0°</span>
-                                            <button type="button" id="quickRotate90Btn" class="px-2 py-0.5 rounded bg-surface2 border border-gold/40 text-[10px] text-gold-soft">+90°</button>
-                                            <button type="button" id="quickOneFingerBtn" class="px-2 py-0.5 rounded bg-surface2 border border-hairline text-[10px] text-muted">1 палец: сдвиг</button>
+                                            <button type="button" id="quickRotate90Btn" onclick="onQuickRotate90()" class="px-2 py-0.5 rounded bg-surface2 border border-gold/40 text-[10px] text-gold-soft">+90°</button>
+                                            <button type="button" id="quickOneFingerBtn" onclick="onToggleOneFingerMode()" class="px-2 py-0.5 rounded bg-surface2 border border-hairline text-[10px] text-muted">1 палец: сдвиг</button>
                                         </div>
                                     </div>
-                                    <input type="range" id="quickRotationSlider" min="-180" max="180" step="1" value="0" class="w-full">
+                                    <input type="range" id="quickRotationSlider" min="-180" max="180" step="1" value="0" class="w-full"
+                                        oninput="onQuickRotationInput(this.value)">
                                 </div>
 
                                 <div id="quickTool-zoom" class="quick-tool-pane hidden space-y-1">
@@ -246,21 +225,25 @@
                                         <span class="text-muted">Масштаб кадра</span>
                                         <span id="quickZoomVal" class="font-semibold text-gold-soft">100%</span>
                                     </div>
-                                    <input type="range" id="quickZoomSlider" min="1" max="2.5" step="0.02" value="1" class="w-full">
+                                    <input type="range" id="quickZoomSlider" min="1" max="2.5" step="0.02" value="1" class="w-full"
+                                        oninput="onQuickZoomInput(this.value)">
                                 </div>
 
                                 <div id="quickTool-color" class="quick-tool-pane hidden grid grid-cols-3 gap-2">
                                     <div>
                                         <div class="flex justify-between text-[10px] text-muted mb-0.5"><span>Ярк.</span><span id="quickBrightVal">0</span></div>
-                                        <input type="range" id="quickBrightnessSlider" min="-20" max="25" step="1" value="0" class="w-full">
+                                        <input type="range" id="quickBrightnessSlider" min="-20" max="25" step="1" value="0" class="w-full"
+                                            oninput="onQuickColorInput('brightness', this.value)">
                                     </div>
                                     <div>
                                         <div class="flex justify-between text-[10px] text-muted mb-0.5"><span>Тепло</span><span id="quickWarmVal">0</span></div>
-                                        <input type="range" id="quickWarmthSlider" min="0" max="25" step="1" value="0" class="w-full">
+                                        <input type="range" id="quickWarmthSlider" min="0" max="25" step="1" value="0" class="w-full"
+                                            oninput="onQuickColorInput('warmth', this.value)">
                                     </div>
                                     <div>
                                         <div class="flex justify-between text-[10px] text-muted mb-0.5"><span>Контр.</span><span id="quickContrastVal">0</span></div>
-                                        <input type="range" id="quickContrastSlider" min="-15" max="25" step="1" value="0" class="w-full">
+                                        <input type="range" id="quickContrastSlider" min="-15" max="25" step="1" value="0" class="w-full"
+                                            oninput="onQuickColorInput('contrast', this.value)">
                                     </div>
                                 </div>
                             </div>
@@ -360,7 +343,43 @@
                      ========================================================= -->
                 <div id="photoModesPanel" class="space-y-4">
 
+                    <!-- Загрузка фото и кадрирование -->
+                    <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-3.5">
+                        <label class="block text-[11px] uppercase tracking-[0.16em] text-gold font-semibold">
+                            Фотографии и кадрирование
+                        </label>
 
+                        <div class="grid grid-cols-2 gap-2.5" id="photoUploadGrid">
+                            <button type="button" id="uploadBeforeBtn"
+                                class="flex items-center justify-center gap-2 py-3.5 px-3 rounded-2xl bg-surface2 border border-hairline hover:border-gold text-ivory text-xs font-semibold active:scale-[0.98] transition min-w-0">
+                                <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                                </svg>
+                                <span id="uploadBeforeLabel" class="truncate">Фото ДО</span>
+                            </button>
+                            <button type="button" id="uploadAfterBtn"
+                                class="flex items-center justify-center gap-2 py-3.5 px-3 rounded-2xl bg-surface2 border border-hairline hover:border-gold text-ivory text-xs font-semibold active:scale-[0.98] transition min-w-0">
+                                <svg class="w-4 h-4 text-gold shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                                </svg>
+                                <span class="truncate">Фото ПОСЛЕ</span>
+                            </button>
+                        </div>
+
+                        <div class="pt-1 space-y-3">
+                            <div class="grid grid-cols-2 gap-1 bg-obsidian p-1 rounded-2xl border border-hairline" id="photoTabGroup">
+                                <button type="button" data-tab="before" class="photo-tab-btn py-1.5 rounded-xl text-xs font-medium transition">Кадр «ДО»</button>
+                                <button type="button" data-tab="after" class="photo-tab-btn py-1.5 rounded-xl text-xs font-medium transition">Кадр «ПОСЛЕ»</button>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="button" id="resetPhotoPosBtn" onclick="resetQuickEdits()"
+                                    class="text-[11px] text-gold hover:text-gold-soft underline underline-offset-4 transition">
+                                    Сбросить масштаб, угол и позицию
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Плашка с названием процедуры -->
                     <div class="bg-surface rounded-3xl p-4 sm:p-5 border border-hairline shadow-lg space-y-3.5">
@@ -1215,7 +1234,18 @@
             const cx = x + w / 2 + photoObj.offsetX;
             const cy = y + h / 2 + photoObj.offsetY;
 
-            try { c.filter = getCanvasFilterString(); } catch (_) { c.filter = 'none'; }
+            const sharpAmt = Math.max(0, Math.min(100, Number(state.sharpness) || 0));
+            const extraContrast = sharpAmt > 0 ? (1 + (sharpAmt / 100) * 0.45) : 1;
+
+            try {
+                const baseFilter = getCanvasFilterString();
+                const cFilter = (1 + state.contrast / 100) * extraContrast;
+                const bFilter = 1 + state.brightness / 100;
+                const wFilter = state.warmth / 100;
+                const satFilter = 1 + (state.warmth > 0 ? 0.05 : 0) + (state.contrast > 5 ? 0.04 : 0);
+                c.filter = `brightness(${bFilter.toFixed(2)}) contrast(${cFilter.toFixed(2)}) sepia(${wFilter.toFixed(2)}) saturate(${satFilter.toFixed(2)})`;
+            } catch (_) { c.filter = 'none'; }
+
             c.save();
             c.translate(cx, cy);
             c.rotate(rad);
@@ -1223,32 +1253,36 @@
             c.restore();
             c.filter = 'none';
 
-            if (state.sharpness > 0.5) {
-                const strength = Math.min(100, state.sharpness) / 100;
+            // Crisp unsharp mask pass on the visible photo slot (step=2 for instant mobile speed)
+            if (sharpAmt > 1) {
+                const strength = sharpAmt / 100;
                 const sx = Math.max(0, Math.floor(x));
                 const sy = Math.max(0, Math.floor(y));
                 const sw = Math.min(c.canvas.width - sx, Math.ceil(w));
                 const sh = Math.min(c.canvas.height - sy, Math.ceil(h));
-                if (sw > 2 && sh > 2) {
+                if (sw > 4 && sh > 4) {
                     const imgData = c.getImageData(sx, sy, sw, sh);
                     const d = imgData.data;
                     const cp = new Uint8ClampedArray(d);
-                    const mix = strength * 1.4;
-                    for (let py = 0; py < sh; py++) {
-                        const u = py > 0 ? py - 1 : py;
-                        const dn = py < sh - 1 ? py + 1 : py;
-                        for (let px = 0; px < sw; px++) {
-                            const l = px > 0 ? px - 1 : px;
-                            const r = px < sw - 1 ? px + 1 : px;
+                    const mix = strength * 1.8;
+                    for (let py = 1; py < sh - 1; py += 2) {
+                        const up = py - 1;
+                        const dn = py + 1;
+                        for (let px = 1; px < sw - 1; px += 2) {
+                            const lt = px - 1;
+                            const rt = px + 1;
                             const idx = (py * sw + px) * 4;
-                            const iU = (u * sw + px) * 4;
+                            const iU = (up * sw + px) * 4;
                             const iD = (dn * sw + px) * 4;
-                            const iL = (py * sw + l) * 4;
-                            const iR = (py * sw + r) * 4;
+                            const iL = (py * sw + lt) * 4;
+                            const iR = (py * sw + rt) * 4;
                             for (let ch = 0; ch < 3; ch++) {
                                 const cen = cp[idx + ch];
                                 const avg = (cp[iU + ch] + cp[iD + ch] + cp[iL + ch] + cp[iR + ch]) * 0.25;
-                                d[idx + ch] = cen + (cen - avg) * mix * 2.1;
+                                const val = cen + (cen - avg) * mix * 2.4;
+                                d[idx + ch] = val;
+                                if (px + 1 < sw) d[idx + 4 + ch] = val;
+                                if (py + 1 < sh) d[idx + sw * 4 + ch] = val;
                             }
                         }
                     }
@@ -1852,7 +1886,23 @@
         let startX = 0, startY = 0;
         let initOffX = 0, initOffY = 0;
 
+        let startAngleDeg = 0;
+        let initRotDeg = 0;
+        let twoFingerActive = false;
+
+        function getAngleFromCanvasCenter(clientX, clientY) {
+            const rect = canvas.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            return (Math.atan2(clientY - cy, clientX - cx) * 180) / Math.PI;
+        }
+
+        function getAngleBetweenTouches(t1, t2) {
+            return (Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX) * 180) / Math.PI;
+        }
+
         canvas.addEventListener('pointerdown', (e) => {
+            if (twoFingerActive) return;
             const rect = canvas.getBoundingClientRect();
             const cy = (e.clientY - rect.top) * (canvas.height / rect.height);
 
@@ -1861,23 +1911,25 @@
                 dragTarget = 'slot';
                 initOffX = state.slots.photo.offsetX;
                 initOffY = state.slots.photo.offsetY;
+                initRotDeg = Number(state.slots.photo.rotation) || 0;
             } else {
                 dragTarget = state.mode === 'single' ? 'before' : (cy < canvas.height / 2 ? 'before' : 'after');
                 state.activePhotoTab = dragTarget;
                 syncPhotoControlsUI();
                 initOffX = state.photos[dragTarget].offsetX;
                 initOffY = state.photos[dragTarget].offsetY;
+                initRotDeg = Number(state.photos[dragTarget].rotation) || 0;
             }
 
             isDragging = true;
             dragMoved = false;
             startX = e.clientX;
             startY = e.clientY;
-            canvas.setPointerCapture(e.pointerId);
+            startAngleDeg = getAngleFromCanvasCenter(e.clientX, e.clientY);
         });
 
         canvas.addEventListener('pointermove', (e) => {
-            if (!isDragging || !dragTarget) return;
+            if (!isDragging || !dragTarget || twoFingerActive) return;
             const photoObj = dragTarget === 'slot' ? state.slots.photo : state.photos[dragTarget];
             if (!photoObj.img) return;
 
@@ -1887,29 +1939,71 @@
 
             if (Math.abs(dx) > 4 || Math.abs(dy) > 4) dragMoved = true;
 
-            photoObj.offsetX = Math.max(-750, Math.min(750, Math.round(initOffX + dx)));
-            photoObj.offsetY = Math.max(-750, Math.min(750, Math.round(initOffY + dy)));
+            if (state.mode !== 'slots' && state.oneFingerRotate) {
+                const curAngle = getAngleFromCanvasCenter(e.clientX, e.clientY);
+                photoObj.rotation = normalizeRotDeg(initRotDeg + (curAngle - startAngleDeg));
+                syncPhotoControlsUI();
+            } else {
+                photoObj.offsetX = Math.max(-750, Math.min(750, Math.round(initOffX + dx)));
+                photoObj.offsetY = Math.max(-750, Math.min(750, Math.round(initOffY + dy)));
+            }
             renderCanvas();
         });
 
-        canvas.addEventListener('pointerup', (e) => {
+        canvas.addEventListener('pointerup', () => {
             if (!isDragging) return;
+            const finishedTarget = dragTarget;
             isDragging = false;
-            try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+            dragTarget = null;
 
-            if (!dragMoved && state.mode !== 'slots') {
-                const photoObj = state.photos[dragTarget];
+            if (!dragMoved && state.mode !== 'slots' && finishedTarget) {
+                const photoObj = state.photos[finishedTarget];
                 if (!photoObj.img) {
-                    if (dragTarget === 'before') fileBefore.click();
+                    if (finishedTarget === 'before') fileBefore.click();
                     else fileAfter.click();
                 }
             }
-            dragTarget = null;
         });
 
         canvas.addEventListener('pointercancel', () => {
             isDragging = false;
             dragTarget = null;
+        });
+
+        // Свободное вращение двумя пальцами на экране телефона
+        let twoFingerStartAngle = 0;
+        let twoFingerInitRot = 0;
+
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2 && state.mode !== 'slots') {
+                const key = state.mode === 'single' ? 'before' : state.activePhotoTab;
+                const p = state.photos[key];
+                if (!p || !p.img) return;
+                e.preventDefault();
+                isDragging = false;
+                twoFingerActive = true;
+                twoFingerStartAngle = getAngleBetweenTouches(e.touches[0], e.touches[1]);
+                twoFingerInitRot = Number(p.rotation) || 0;
+            }
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (twoFingerActive && e.touches.length === 2 && state.mode !== 'slots') {
+                e.preventDefault();
+                const key = state.mode === 'single' ? 'before' : state.activePhotoTab;
+                const p = state.photos[key];
+                if (!p || !p.img) return;
+                const curAngle = getAngleBetweenTouches(e.touches[0], e.touches[1]);
+                p.rotation = normalizeRotDeg(twoFingerInitRot + (curAngle - twoFingerStartAngle));
+                syncPhotoControlsUI();
+                renderCanvas();
+            }
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', () => {
+            if (twoFingerActive) {
+                twoFingerActive = false;
+            }
         });
 
         // =========================================================================
@@ -2138,7 +2232,6 @@
             });
 
             document.getElementById('photoModesPanel').classList.toggle('hidden', isSlots);
-            const _tub = document.getElementById('previewTopUploadBar'); if (_tub) _tub.classList.toggle('hidden', isSlots);
             document.getElementById('slotsModePanel').classList.toggle('hidden', !isSlots);
 
             if (!isSlots) {
@@ -2237,10 +2330,73 @@
 
             document.querySelectorAll('.photo-tab-btn').forEach(btn => {
                 const active = btn.dataset.tab === state.activePhotoTab;
-                btn.className = `photo-tab-btn py-1 rounded-lg text-[11px] font-medium transition ${
+                btn.className = `photo-tab-btn py-1.5 rounded-xl text-xs font-medium transition ${
                     active ? 'bg-gold text-obsidian font-semibold' : 'text-muted hover:text-ivory'
                 }`;
             });
+        }
+
+        function selectQuickTool(tool) {
+            document.querySelectorAll('.quick-tool-btn').forEach(b => {
+                const active = b.dataset.quickTool === tool;
+                b.className = `quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold transition ${
+                    active ? 'bg-gold text-obsidian' : 'bg-surface2 text-ivory/80 hover:text-gold-soft'
+                }`;
+            });
+            document.querySelectorAll('.quick-tool-pane').forEach(pane => {
+                pane.classList.toggle('hidden', pane.id !== `quickTool-${tool}`);
+            });
+        }
+
+        function onQuickSharpnessInput(val) {
+            state.sharpness = Math.max(0, Math.min(100, parseInt(val, 10) || 0));
+            syncPhotoControlsUI();
+            renderCanvas();
+        }
+
+        function onQuickRotationInput(val) {
+            const p = state.photos[state.activePhotoTab];
+            p.rotation = normalizeRotDeg(val);
+            syncPhotoControlsUI();
+            renderCanvas();
+        }
+
+        function onQuickRotate90() {
+            const p = state.photos[state.activePhotoTab];
+            p.rotation = normalizeRotDeg((Number(p.rotation) || 0) + 90);
+            syncPhotoControlsUI();
+            renderCanvas();
+        }
+
+        function onToggleOneFingerMode() {
+            state.oneFingerRotate = !state.oneFingerRotate;
+            syncPhotoControlsUI();
+        }
+
+        function onQuickZoomInput(val) {
+            state.photos[state.activePhotoTab].zoom = Math.max(1, Math.min(2.5, parseFloat(val) || 1));
+            syncPhotoControlsUI();
+            renderCanvas();
+        }
+
+        function onQuickColorInput(prop, val) {
+            state[prop] = parseInt(val, 10) || 0;
+            syncPhotoControlsUI();
+            renderCanvas();
+        }
+
+        function resetQuickEdits() {
+            const p = state.photos[state.activePhotoTab];
+            p.zoom = 1;
+            p.offsetX = 0;
+            p.offsetY = 0;
+            p.rotation = 0;
+            state.sharpness = 0;
+            state.brightness = 0;
+            state.warmth = 0;
+            state.contrast = 0;
+            syncPhotoControlsUI();
+            renderCanvas();
         }
 
         function syncColorUI() {
@@ -2317,133 +2473,7 @@
             syncPhotoControlsUI();
         }));
 
-        document.getElementById('resetPhotoPosBtn').addEventListener('click', () => {
-            const p = state.photos[state.activePhotoTab];
-            p.zoom = 1;
-            p.offsetX = 0;
-            p.offsetY = 0;
-            p.rotation = 0;
-            state.sharpness = 0;
-            state.brightness = 0;
-            state.warmth = 0;
-            state.contrast = 0;
-            syncPhotoControlsUI();
-            renderCanvas();
-        });
-
-        document.querySelectorAll('.quick-tool-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tool = btn.dataset.quickTool;
-                document.querySelectorAll('.quick-tool-btn').forEach(b => {
-                    const active = b.dataset.quickTool === tool;
-                    b.className = `quick-tool-btn px-2 py-1 rounded-lg text-[10px] font-semibold transition ${
-                        active ? 'bg-gold text-obsidian' : 'bg-surface2 text-ivory/80 hover:text-gold-soft'
-                    }`;
-                });
-                document.querySelectorAll('.quick-tool-pane').forEach(pane => {
-                    pane.classList.toggle('hidden', pane.id !== `quickTool-${tool}`);
-                });
-            });
-        });
-
-        document.getElementById('quickSharpnessSlider').addEventListener('input', (e) => {
-            state.sharpness = Math.max(0, Math.min(100, parseInt(e.target.value, 10) || 0));
-            syncPhotoControlsUI();
-            renderCanvas();
-        });
-
-        document.getElementById('quickRotationSlider').addEventListener('input', (e) => {
-            const p = state.photos[state.activePhotoTab];
-            p.rotation = normalizeRotDeg(e.target.value);
-            syncPhotoControlsUI();
-            renderCanvas();
-        });
-
-        document.getElementById('quickRotate90Btn').addEventListener('click', () => {
-            const p = state.photos[state.activePhotoTab];
-            p.rotation = normalizeRotDeg((Number(p.rotation) || 0) + 90);
-            syncPhotoControlsUI();
-            renderCanvas();
-        });
-
-        document.getElementById('quickOneFingerBtn').addEventListener('click', () => {
-            state.oneFingerRotate = !state.oneFingerRotate;
-            syncPhotoControlsUI();
-        });
-
-        document.getElementById('quickZoomSlider').addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value);
-            state.photos[state.activePhotoTab].zoom = val;
-            syncPhotoControlsUI();
-            renderCanvas();
-        });
-
-        document.getElementById('quickBrightnessSlider').addEventListener('input', (e) => {
-            state.brightness = parseInt(e.target.value, 10);
-            syncPhotoControlsUI();
-            renderCanvas();
-        });
-
-        document.getElementById('quickWarmthSlider').addEventListener('input', (e) => {
-            state.warmth = parseInt(e.target.value, 10);
-            syncPhotoControlsUI();
-            renderCanvas();
-        });
-
-        document.getElementById('quickContrastSlider').addEventListener('input', (e) => {
-            state.contrast = parseInt(e.target.value, 10);
-            syncPhotoControlsUI();
-            renderCanvas();
-        });
-
-        document.getElementById('quickResetBtn').addEventListener('click', () => {
-            const p = state.photos[state.activePhotoTab];
-            p.zoom = 1;
-            p.offsetX = 0;
-            p.offsetY = 0;
-            p.rotation = 0;
-            state.sharpness = 0;
-            state.brightness = 0;
-            state.warmth = 0;
-            state.contrast = 0;
-            syncPhotoControlsUI();
-            renderCanvas();
-        });
-
-        // Свободное вращение двумя пальцами на холсте
-        let twistStartAngle = 0;
-        let twistInitRot = 0;
-        let twistActive = false;
-
-        canvas.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 2 && state.mode !== 'slots') {
-                const targetKey = state.mode === 'single' ? 'before' : state.activePhotoTab;
-                const p = state.photos[targetKey];
-                if (!p || !p.img) return;
-                e.preventDefault();
-                isDragging = false;
-                twistActive = true;
-                twistStartAngle = (Math.atan2(e.touches[1].clientY - e.touches[0].clientY, e.touches[1].clientX - e.touches[0].clientX) * 180) / Math.PI;
-                twistInitRot = Number(p.rotation) || 0;
-            }
-        }, { passive: false });
-
-        canvas.addEventListener('touchmove', (e) => {
-            if (twistActive && e.touches.length === 2 && state.mode !== 'slots') {
-                e.preventDefault();
-                const targetKey = state.mode === 'single' ? 'before' : state.activePhotoTab;
-                const p = state.photos[targetKey];
-                if (!p || !p.img) return;
-                const cur = (Math.atan2(e.touches[1].clientY - e.touches[0].clientY, e.touches[1].clientX - e.touches[0].clientX) * 180) / Math.PI;
-                p.rotation = normalizeRotDeg(twistInitRot + (cur - twistStartAngle));
-                syncPhotoControlsUI();
-                renderCanvas();
-            }
-        }, { passive: false });
-
-        canvas.addEventListener('touchend', () => {
-            twistActive = false;
-        });
+// quick controls bound directly via inline handlers & syncPhotoControlsUI
 
         toggleLabelsCheck.addEventListener('change', (e) => {
             state.showLabels = e.target.checked;
